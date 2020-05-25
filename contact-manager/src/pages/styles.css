@@ -1,0 +1,23 @@
+.color {
+	background-image: linear-gradient(to right, red, yellow);
+	border-radius: 4px
+}
+
+.center {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+@media (min-width:992px) {
+	.divider {
+			border-right: 1px solid #dee2e6 !important;
+	}
+}
+
+.smallText {
+	text-align: center;
+	line-height: 1rem;
+	font-size: 0.75rem;
+}
