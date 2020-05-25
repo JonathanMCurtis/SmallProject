@@ -10,7 +10,7 @@
   $LastName = $inputData[lastName];
   $Email = $inputData[email];
   $Phone = $inputData[phone];
-  $CreationDate = ". date(d-m-Y) .";
+  $CreationDate = date(d-m-Y);
   $User = $inputData[user];
 
   // Opens an SQL connection to the database using the credentials below
@@ -25,13 +25,9 @@
   {
       // Create an SQL statement to insert the provided data into the contacts
       // table.
-      $sql = "INSERT INTO
-              contacts (ID, FirstName, LastName, Email,
-                        Phone, CreationDate, User)
-              VALUES ($ID, $FirstName, $LastName, $Email,
-                      $Phone, $CreationDate, $User)";
+    $sql = "INSERT INTO contacts (ID, FirstName, LastName, Email, Phone, CreationDate, User) VALUES (" . $ID . ", " . $FirstName . ", " . $LastName . ", " . $Email . ", " . $Phone . ", " . $CreationDate . ", " . $User . ")";
 
-      $connection->query($sql);
+    $connection->query($sql);
   }
 
   // Close the connection
@@ -46,10 +42,7 @@
 
   function returnWithError($error)
 	{
-		$retValue = '{"ID":"","FirstName":"",
-                  "LastName":"","Email":"",
-                  "Phone":"","CreationDate":"",
-                  "User":"", "error":"' . $error . '"}';
+		$retValue = '{"ID":"","FirstName":"", "LastName":"","Email":"", "Phone":"","CreationDate":"", "User":"", "error":"' . $error . '"}';
 		sendResultInfoAsJson($retValue);
 	}
 

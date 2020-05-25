@@ -5,13 +5,13 @@
   $inputData = getRequestInfo();
 
   // Data to be inserted into database
-  $ID = $inputData[ID];
+  $ID = "";
   $FirstName = "";
   $LastName = "";
   $Email = "";
   $Phone = "";
   $CreationDate = "";
-  $User = "";
+  $User = $inputData[User];
 
   // Opens an SQL connection to the database using the credentials below
   $connection = new mysqli("localhost", "116751", "password", "116751");
@@ -25,8 +25,7 @@
   {
       // Create an SQL statement to get data from contacts table from contact
       // with the provided ID/
-      $sql = "SELECT ID,FirstName,LastName,Email,Phone,CreationDate,User
-              FROM Contacts where ID=$inputData[ID]";
+      $sql = "SELECT ID,FirstName,LastName,Email,Phone,CreationDate,User FROM Contacts where ID = " . $inputData[User];
 
       $result = $connection->query($sql);
 
@@ -36,16 +35,15 @@
         $row = result->fetch_assoc();
 
         // Assign values in the row to variables
+        $ID = $row[ID];
         $FirstName = $row[FirstName];
         $LastName = $row[LastName];
         $Email = $row[Email];
         $Phone = $row[Phone];
         $CreationDate = $row[CreationDate];
-        $User = $row[User];
 
         $connection->close();
-        returnWithInfo($ID,$FirstName,$LastName,$Email,
-                       $Phone,$CreationDate,$User);
+        returnWithInfo($ID,$FirstName,$LastName,$Email,$Phone,$CreationDate,$User);
       }
       else
       {
@@ -63,10 +61,7 @@
 
   function returnWithError($error)
 	{
-		$retValue = '{"ID":"'. $ID .'","FirstName":"'. $FirstName .'",
-                  "LastName":"'. $LastName .'","Email":"'. $Email .'",
-                  "Phone":"'. $Phone .'","CreationDate":"'$CreationDate'",
-                  "User":"'. $User .'", "error":"' . $error . '"}';
+		$retValue = '{"ID":"'. $ID .'","FirstName":"'. $FirstName .'", "LastName":"'. $LastName .'","Email":"'. $Email .'", "Phone":"'. $Phone .'","CreationDate":"'$CreationDate'", "User":"'. $User .'", "error":"' . $error . '"}';
 		sendResultInfoAsJson($retValue);
 	}
 
@@ -76,13 +71,9 @@
 		echo $obj;
 	}
 
-	function returnWithInfo($ID,$FirstName,$LastName,$Email,
-                          $Phone,$CreationDate,$User)
+	function returnWithInfo($ID,$FirstName,$LastName,$Email,$Phone,$CreationDate,$User)
 	{
-		$retValue = '{"ID":"'. $ID .'","FirstName":"'. $FirstName .'",
-                  "LastName":"'. $LastName .'","Email":"'. $Email .'",
-                  "Phone":"'. $Phone .'","CreationDate":"'$CreationDate'",
-                  "User":"'. $User .'", "error":""}';
+		$retValue = '{"ID":"'. $ID .'","FirstName":"'. $FirstName .'", "LastName":"'. $LastName .'","Email":"'. $Email .'", "Phone":"'. $Phone .'","CreationDate":"'$CreationDate'", "User":"'. $User .'", "error":""}';
 		sendResultInfoAsJson($retValue);
 	}
 

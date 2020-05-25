@@ -23,12 +23,11 @@
   }
   else
   {
-      // Create an SQL statement to insert the provided data into the contacts
-      // table.
-      $sql = "DELETE Contacts
-              WHERE ID = $ID";
+    // Create an SQL statement to insert the provided data into the contacts
+    // table.
+    $sql = "DELETE Contacts WHERE ID = " . $ID;
 
-      $connection->query($sql);
+    $connection->query($sql);
   }
 
   // Close the connection
@@ -43,10 +42,7 @@
 
   function returnWithError($error)
 	{
-		$retValue = '{"ID":"","FirstName":"",
-                  "LastName":"","Email":"",
-                  "Phone":"","CreationDate":"",
-                  "User":"", "error":"' . $error . '"}';
+		$retValue = '{"ID":"","FirstName":"", "LastName":"","Email":"", "Phone":"","CreationDate":"", "User":"", "error":"' . $error . '"}';
 		sendResultInfoAsJson($retValue);
 	}
 
@@ -56,4 +52,4 @@
 		echo $obj;
 	}
 
- ?>
+?>
