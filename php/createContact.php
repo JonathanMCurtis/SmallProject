@@ -14,12 +14,12 @@
   $User = $inputData[user];
 
   // Opens an SQL connection to the database using the credentials below
-  $connection = new mysqli("localhost", "116751", "password", "116751");
+  $connection = new mysqli("localhost", "smallProject", "thisIsInsecure", "SmallProjectDB");
 
   // If there is an error in the connection, returns a formatted error
   if($connection->connect_error)
   {
-    returnWithError($connection->connect_error)
+    returnWithError($connection->connect_error);
   }
   else
   {

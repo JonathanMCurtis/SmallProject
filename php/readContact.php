@@ -14,18 +14,18 @@
   $User = $inputData[User];
 
   // Opens an SQL connection to the database using the credentials below
-  $connection = new mysqli("localhost", "116751", "password", "116751");
+  $connection = new mysqli("localhost", "smallProject", "thisIsInsecure", "SmallProjectDB");
 
   // If there is an error in the connection, returns a formatted error
   if($connection->connect_error)
   {
-    returnWithError($connection->connect_error)
+    returnWithError($connection->connect_error);
   }
   else
   {
       // Create an SQL statement to get data from contacts table from contact
       // with the provided ID/
-      $sql = "SELECT ID,FirstName,LastName,Email,Phone,CreationDate,User FROM Contacts where ID = " . $inputData[User];
+      $sql = "SELECT ID,FirstName,LastName,Email,Phone,CreationDate,User FROM Contacts where ID = " . $User;
 
       $result = $connection->query($sql);
 
