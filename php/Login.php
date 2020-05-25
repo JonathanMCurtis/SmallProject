@@ -7,7 +7,7 @@
 	$firstName = "";
 	$lastName = "";
 
-  	// Opens a sql connection using the username and password for the project,
+  // Opens a sql connection using the username and password for the project,
 	// to a database named
 	$conn = new mysqli("localhost", "smallProject", "thisIsInsecure", "SmallProjectDB"); //localhost, db username, db password, db name
 
@@ -33,7 +33,7 @@
 			$lastName = $row["LastName"];
 			$id = $row["ID"];
 
-      		// Return this information from the call
+      // Return this information from the call
 			returnWithInfo($firstName, $lastName, $id );
 		}
 		else
@@ -41,7 +41,7 @@
 			// Otherwise, no record matching that exists (either user doesn't exist, or invalid password)
 			returnWithError("UserID or Password does not exists");
 		}
-    	// Close the connection
+    // Close the connection
 		$conn->close();
 	}
 
@@ -67,5 +67,4 @@
 	{
 		return json_decode(file_get_contents('php://input'), true);
 	}
-
 ?>
