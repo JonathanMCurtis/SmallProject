@@ -7,9 +7,9 @@ $id = 0;
 $firstName = "";
 $lastName = "";
 
-// Opens a sql connection using the username and password for the project,
-// to a database named
-$conn = new mysqli("localhost", "smallProject", "thisIsInsecure", "SmallProjectDB"); //localhost, db username, db password, db name
+// Opens an SQL connection to the database using the stored credentials
+$ini = parse_ini_file("../../php/temp.ini");
+$connection = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
 
 // If the connection status returns an error, return with a connection error
 if ($conn->connect_error)

@@ -13,8 +13,9 @@
     $CreationDate = date("d-m-Y");
     $User = $inputData["User"];
 
-    // Opens an SQL connection to the database using the credentials below
-    $connection = new mysqli("localhost", "smallProject", "thisIsInsecure", "SmallProjectDB");
+	// Opens an SQL connection to the database using the stored credentials
+	$ini = parse_ini_file("../../php/temp.ini");
+	$connection = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
 
     // If there is an error in the connection, returns a formatted error
     if($connection->connect_error)
@@ -29,12 +30,11 @@
 
         if($result->num_rows > 0)
         {
+			// Create an SQL statement to insert the provided data into the contacts
+			// table.
+			$sql = "UPDATE Contacts SET FirstName = '" . $FirstName . "', LastName = '" . $LastName . "', Email = '" . $Email . "', Phone = '" . $Phone . "', CreationDate = '" . $CreationDate . "' WHERE ID = '" . $ID . "'";
 
-          // Create an SQL statement to insert the provided data into the contacts
-          // table.
-          $sql = "UPDATE Contacts SET FirstName = '" . $FirstName . "', LastName = '" . $LastName . "', Email = '" . $Email . "', Phone = '" . $Phone . "', CreationDate = '" . $CreationDate . "' WHERE ID = '" . $ID . "'";
-
-          $connection->query($sql);
+			$connection->query($sql);
         }
 
         else
