@@ -21,3 +21,114 @@
 	line-height: 1rem;
 	font-size: 0.75rem;
 }
+
+@media (min-width:992px) {
+	.searchbar {
+			border-right: 0px solid #dee2e6 !important;
+	}
+}
+
+.colorholder{
+	background-color: #6f63f3;
+}
+
+.swatch{
+	background-color: #b61506;
+}
+
+/* .cardbody{
+	border-radius: 10px !important;
+	background-color: #b61406 !important;
+	color: #ffffff;
+	font-size: 20px;
+	width: 60%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+} */
+
+.cardhead{
+	border-radius: 0px !important;
+	background-color: #610c04 !important;
+	position: sticky;
+	top: 0;
+}
+
+.cardscroll{
+	overflow-y: scroll;
+}
+
+.buttoncolor{
+	border-color:  #ffffff !important;
+	color: #ffffff !important;
+	/* border-color:  #c90b05 !important;
+	color: #c90b05 !important; */
+	border-width: 1.5px !important;
+	background-color: rgba(255, 0, 0, 0.0) !important;
+}
+
+.buttoncolorform{
+	border-color:  #ffffff !important;
+	color: #ffffff !important;
+	/* border-color:  #c90b05 !important;
+	color: #c90b05 !important; */
+	border-width: 1.5px !important;
+	background-color: rgba(255, 0, 0, 0.0) !important;
+	margin: 10px;
+	width: 175px;
+	margin-right: -55%;
+}
+
+.buttoncolor:hover{
+	border-color:  #b61406 !important;
+	color: #ffffff !important;
+	border-width: 1.5px !important;
+	background-color: #b61406 !important;
+	/* border-color:  #c90b05 !important;
+	color: #000000 !important;
+	border-width: 1.5px !important;
+	background-color: #c90b05 !important; */
+}
+
+.buttoncolor2{
+	border-color:  #6f63f3 !important;
+	color: rgb(255, 255, 255) !important;
+	border-width: 1.5px !important;
+	background-color: #6f63f3 !important;
+}
+
+.buttoncolor2:hover{
+	border-color:  #6156d4 !important;
+	color: #ffffff !important;
+	border-width: 1.5px !important;
+	background-color: #6156d4 !important;
+}
+
+.searchcolor{
+	background-color: #b61406!important;
+	border-color: #ffffff !important;
+	color: #ffffff !important;
+	border-width: 1.5px !important;
+	/* background-color: #19191a !important;
+	border-color: #c90b05 !important;
+	color: #c90b05 !important;
+	border-width: 1.5px !important; */
+}
+
+.searchcolor2{
+	background-color: #cacad4 !important;
+	border-color: #6f63f3 !important;
+	color: #6f63f3 !important;
+	border-width: 1.5px !important;
+}
+
+.navbrand{
+	color: #ffffff !important;
+}
+
+.modalcolor{
+	color: #6f63f3 !important;
+}
+
+.modalbg{
+	background-color: #d0cdd6 !important;
+}
