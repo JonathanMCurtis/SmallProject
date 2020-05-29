@@ -1,57 +1,37 @@
-<?php
-	// Creates contact in the database
+<?php require './Functions.php';
+    // Deletes a contact from the database
+    $requiredProps = ["ContactID","UserID"];
 
-	// Gets the information provided in the file call
-	$inputData = getRequestInfo();
+    // Gets the information provided in the API call
+    $inputData = getRequestInfo();
+    if(ensureProps($inputData, $requiredProps)) {
 
-	// Data to be inserted into database
-	$ID = $inputData["ID"];
-	$FirstName = "";
-	$LastName = "";
-	$Email = "";
-	$Phone = "";
-	$CreationDate = "";
-	$User = "";
+        // Data to be inserted into database
+        $ContactID = $inputData["ContactID"];
+        $UserID = $inputData["UserID"];
 
-	// Opens an SQL connection to the database using the stored credentials
-	$ini = parse_ini_file("../../php/temp.ini");
-	$connection = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
+        // Opens an SQL connection to the database using the stored credentials
+        $ini = parse_ini_file("../../php/temp.ini");
+        $connection = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
 
+        // If there is an error in the connection, returns a formatted error
+        if ($connection->connect_error) {
+            returnWithError(503, $connection->connect_error);
+        } else {
+            $safety = "SELECT ContactID FROM Contacts WHERE ContactID = " . $ContactID . " AND UserID = " . $UserID;
+            $result = $connection->query($safety);
 
-	// If there is an error in the connection, returns a formatted error
-	if($connection->connect_error)
-	{
-		returnWithError($connection->connect_error);
-	}
-	else
-	{
-		// Create an SQL statement to insert the provided data into the contacts
-		// table.
-		$sql = "DELETE FROM Contacts WHERE ID = " . $ID;
+            if (mysqli_num_rows($result) == 1) {
+                // SQL query that removes the specified contact, iff it exists and is associated with the given user.
+                $sql = "DELETE FROM Contacts WHERE ContactID = " . $ContactID . " AND UserID = '" . $UserID . "'";
+                $connection->query($sql);
+                returnWithInfo(array());
+            } else {
+                    returnWithError(204, "No contacts found matching these criteria.");
+            }
+        }
 
-		$connection->query($sql);
-	}
+        // Close the connection
+        $connection->close();
+    }
 
-	// Close the connection
-	$connection->close();
-
-
-
-	function getRequestInfo()
-	{
-		return json_decode(file_get_contents('php://input'), true);
-	}
-
-	function returnWithError($error)
-	{
-		$retValue = '{"ID":"","FirstName":"", "LastName":"","Email":"", "Phone":"","CreationDate":"", "User":"", "error":"' . $error . '"}';
-		sendResultInfoAsJson($retValue);
-	}
-
-	function sendResultInfoAsJson($obj)
-	{
-		header('Content-type: application/json');
-		echo $obj;
-	}
-
-?>
