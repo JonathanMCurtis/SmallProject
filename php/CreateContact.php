@@ -1,63 +1,48 @@
-<?php
+<?php require './Functions.php';
     // Creates contact in the database
+    $requiredProps = ["FirstName","LastName","Email","Phone","UserID"];
 
-    // Gets the information provided in the file call
-    $inputData = getRequestInfo();
-
-    // Data to be inserted into database
-    $ID = "";
-    $FirstName = $inputData["FirstName"];
-    $LastName = $inputData["LastName"];
-    $Email = $inputData["Email"];
-    $Phone = $inputData["Phone"];
-    $CreationDate = date("d-m-Y");
-    $User = $inputData["User"];
-
-    // Opens an SQL connection to the database using the stored credentials
-    $ini = parse_ini_file("../../php/temp.ini");
-    $connection = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
-
-    // If there is an error in the connection, returns a formatted error
-    if($connection->connect_error)
+    // Gets the information provided in the API call
+    $received = file_get_contents('php://input');
+    $inputData = getRequestInfo($received);
+    if(ensureProps($inputData, $requiredProps))
     {
-        returnWithError($connection->connect_error);
+        // Data to be inserted into database
+        $ContactID = "";
+        $FirstName = $inputData["FirstName"];
+        $LastName = $inputData["LastName"];
+        $Email = $inputData["Email"];
+        $Phone = $inputData["Phone"];
+        $CreationDate = date("U");
+        $UserID = $inputData["UserID"];
+
+        // Opens a SQL connection to the database using the stored credentials
+        $ini = parse_ini_file("../../php/temp.ini");
+        $connection = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
+
+        // If there is an error in the connection, returns a formatted error
+        if($connection->connect_error)
+        {
+            returnWithError(503, $connection->connect_error);
+        }
+        else
+        {
+            // Create an SQL statement to insert the provided data into the contacts table.
+            $sql = "INSERT INTO Contacts (FirstName, LastName, Email, Phone, CreationDate, UserID) VALUES ('" . $FirstName . "', '" . $LastName . "', '" . $Email . "', '" . $Phone . "', '" . $CreationDate . "', '" . $UserID . "')";
+
+            $connection->query($sql);
+
+            // Since we have no reference field to pull from, get the most recent ContactID
+            $sql = "SELECT ContactID FROM Contacts ORDER BY ContactID DESC LIMIT 1";
+            $results = $connection->query($sql);
+            $row = $results->fetch_assoc();
+            // Prepare our output array
+            $output = array();
+            $output["ContactID"] = $row["ContactID"];
+            // Encode and send.
+            returnWithInfo($output);
+        }
+
+        // Close the connection
+        $connection->close();
     }
-    else
-    {
-        // Create an SQL statement to insert the provided data into the contacts
-        // table.
-        $sql = "INSERT INTO Contacts (FirstName, LastName, Email, Phone, CreationDate, User) VALUES ('" . $FirstName . "', '" . $LastName . "', '" . $Email . "', '" . $Phone . "', '" . $CreationDate . "', '" . $User . "')";
-
-        $connection->query($sql);
-        returnWithInfo($FirstName, $LastName, $id);
-    }
-
-    // Close the connection
-    $connection->close();
-
-
-
-    function getRequestInfo()
-    {
-        return json_decode(file_get_contents('php://input'), true);
-    }
-
-    function returnWithInfo($firstName, $lastName, $id)
-    {
-    $retValue = '{"id": "' . $id . '","firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
-    sendResultInfoAsJson($retValue);
-    }
-
-    function returnWithError($error)
-    {
-        $retValue = '{"ID":"","FirstName":"", "LastName":"","Email":"", "Phone":"","CreationDate":"", "User":"", "error":"' . $error . '"}';
-        sendResultInfoAsJson($retValue);
-    }
-
-    function sendResultInfoAsJson($obj)
-    {
-        header('Content-type: application/json');
-        echo $obj;
-    }
-
- ?>
