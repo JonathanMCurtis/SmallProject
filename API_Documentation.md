@@ -206,7 +206,8 @@ Output:
 - "ErrorID" : 
     - 0 : Successful
     - 404 : Connection Error
-    - 500 : No contact found matching this criteria
+    - 500 : Invalid entry (multiple contacts found)
+    - 501 : No contact found matching this criteria
 - "Error" : Error message, or empty if successful.
 
 Usage:
