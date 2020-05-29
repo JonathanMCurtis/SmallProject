@@ -1,34 +1,29 @@
 import React, { Component } from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Modal from 'react-bootstrap/Modal';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-import Carousel from 'react-bootstrap/Carousel';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import cactus from './../data/cactus.png';
-import Figure from 'react-bootstrap/Figure';
+import { Modal, Container, Button, Carousel, Row, Col, Form, Figure } from './';
+import cactus from '../data/cactus.png';
 import md5 from 'md5';
 import './styles.css';
+import NavBar from '../components/NavBar';
+import { connect } from 'react-redux';
+import { createUser, loginUser, logoutUser } from '../config';
+import { Link } from 'react-router-dom';
 
 const buttonLink = 'bg-transparent border-0 p-0 text-primary';
 
-export class Home extends Component {
+class Home extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = { registerModal: false, loginModal: false };
 	}
 
-	componentDidMount() {
-		// fetch('http://dummy.restapiexample.com/api/v1/employees')
-		// 	.then(data => data.json())
-		// 	.then(json => alert(JSON.stringify(json.data)))
-	}
-
 	renderRegisterForm() {
+		const signup = () => {
+			this.thanks.className = 'visible';
+			this.props.createUser({ User: this.user.value, Password: md5(this.password.value),
+				                      FirstName: this.fName.value, LastName: this.lName.value });
+		};
+
 		return (
 			<div>
 				<Form>
@@ -36,41 +31,47 @@ export class Home extends Component {
 						<Form.Label>Name</Form.Label>
 						<Row>
 							<Col sm = '5'>
-								<Form.Control type = 'text' placeholder = 'First name' ref = { name => (this.fName = name) } />
+								<Form.Control type = 'text' placeholder = 'First name' ref = { ref => (this.fName = ref) } />
 							</Col>
 							<Col>
-								<Form.Control type = 'text' placeholder = 'Last name' ref = { name => (this.lName = name) } />
+								<Form.Control type = 'text' placeholder = 'Last name' ref = { ref => (this.lName = ref) } />
 							</Col>
 						</Row>
 					</Form.Group>
 					<Form.Group>
-						<Form.Label>Email</Form.Label>
-						<Form.Control type = 'email' placeholder = 'example@domain.com' ref = { mail => (this.email = mail) } />
+						<Form.Label>Username</Form.Label>
+						<Form.Control type = 'text' placeholder = 'myUsername' ref = { ref => (this.user = ref) } />
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Password</Form.Label>
-						<Form.Control type = 'password' placeholder = 'Password' ref = { pass => (this.password = pass) } />
+						<Form.Control type = 'password' placeholder = 'Password' ref = { ref => (this.password = ref) } />
 					</Form.Group>
 				</Form>
-				<Button onClick = { () => document.getElementById('thanks').className = 'visible' }>Submit</Button>
+				<Button onClick = { () => signup() }>Submit</Button>
 			</div>
 		);
 	}
 
 	renderLoginForm() {
+		const login = () => {
+			this.signIn.className = 'visible';
+
+			this.props.loginUser({ 'User': this.user.value, 'Password': md5(this.password.value) });
+		};
+
 		return (
 			<div>
 				<Form>
 					<Form.Group>
-						<Form.Label>Email</Form.Label>
-						<Form.Control type = 'email' placeholder = 'example@domain.com' ref = { mail => (this.email = mail) } />
+						<Form.Label>Username</Form.Label>
+						<Form.Control type = 'text' placeholder = 'CoolKid123' ref = { ref => (this.user = ref) } />
 					</Form.Group>
 					<Form.Group>
 						<Form.Label>Password</Form.Label>
-						<Form.Control type = 'password' placeholder = 'Password' ref = { pass => (this.password = pass) } />
+						<Form.Control type = 'password' placeholder = 'Password' ref = { ref => (this.password = ref) } />
 					</Form.Group>
 				</Form>
-				<Button onClick = { () => document.getElementById('sign-in').className = 'visible' }>Log in</Button>
+				<Button onClick = { () => login() }>Log in</Button>
 			</div>
 		);
 	}
@@ -86,16 +87,21 @@ export class Home extends Component {
 						<Row>
 							<Col className = 'divider'>
 								<p className = 'smallText'>Already have an account?<br />
-									<button className = { buttonLink } onClick = { () => this.setState({ loginModal: true, registerModal: false })}>
+									<button
+										className = { buttonLink }
+										onClick = { () => this.setState({ loginModal: true, registerModal: false }) }
+									>
 										Sign in
 									</button>
-									{' '}instead!
+									{ ' ' }instead!
 								</p>
 								{ this.renderRegisterForm() }
 							</Col>
 							<Col className = 'center' lg = '5'>
 								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption id = 'thanks' className = 'invisible'>Hello! Thank you for signing up.</Figure.Caption>
+								<Figure.Caption ref = { ref => this.thanks = ref } className = 'invisible'>
+									Hello! Thank you for signing up.
+								</Figure.Caption>
 							</Col>
 						</Row>
 					</Container>
@@ -115,14 +121,19 @@ export class Home extends Component {
 						<Row>
 							<Col className = 'center divider' lg = '5'>
 								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption id = 'sign-in' className = 'invisible'>Signing in...</Figure.Caption>
+								<Figure.Caption ref = { ref => this.signIn = ref } className = 'invisible'>
+									Signing in...
+								</Figure.Caption>
 							</Col>
 							<Col>
 								<p className = 'smallText'>Don't have an account?<br />
-									<button className = { buttonLink } onClick = { () => this.setState({ registerModal: true, loginModal: false })}>
+									<button
+										className = { buttonLink }
+										onClick = { () => this.setState({ registerModal: true, loginModal: false }) }
+									>
 										Sign up
 									</button>
-									{' '}instead!
+									{ ' ' }instead!
 								</p>
 								{ this.renderLoginForm() }
 							</Col>
@@ -133,51 +144,43 @@ export class Home extends Component {
 		);
 	}
 
-	renderSlider() {
-
-	}
-
-	renderNavigation() {
+	renderCarousel() {
 		return (
-			<Navbar bg = 'dark' variant = 'dark' sticky = 'top'>
-				<Container expand = 'sm'>
-					<Navbar.Brand>Small Project</Navbar.Brand>
-					<Nav className = 'ml-auto'>
-						<Nav.Item>
-							<Nav.Link
-								eventKey = 'register'
-								onSelect = { () => this.setState({ registerModal: true }) }
-							>
-						Register
-							</Nav.Link>
-						</Nav.Item>
-						<Nav.Item>
-							<Nav.Link
-								eventKey = 'login'
-								onSelect = { () => this.setState({ loginModal: true }) }
-							>
-									Login
-							</Nav.Link>
-						</Nav.Item>
-					</Nav>
-				</Container>
-			</Navbar>
+			<Carousel className = 'bg-primary slider'>
+				<Carousel.Item>
+					<h1>First slide label</h1>
+				</Carousel.Item>
+				<Carousel.Item>
+					<h1>Second slide label</h1>
+				</Carousel.Item>
+				<Carousel.Item>
+					<h1>Third slide label</h1>
+				</Carousel.Item>
+			</Carousel>
 		);
 	}
 
 	render() {
-		let newUser = {
-			name: '',
-			email: '',
-			password: ''
-		}
-	
 		return (
 			<div>
-				{ this.renderNavigation() }
+				<NavBar onSelect = {{
+					'Sign Up': () => this.setState({ registerModal: true }),
+					'Login': () => this.setState({ loginModal: true }) }}
+				/>
+				{ this.renderCarousel() }
 				{ this.renderRegisterModal() }
 				{ this.renderLoginModal() }
 			</div>
 		);
 	}
 }
+
+const mapStateToProps = ({ loggedIn, currentUser }) => {
+	const { FirstName, ErrorID } = currentUser;
+
+	return { loggedIn, FirstName, ErrorID };
+};
+
+const mapDispatchToProps = { createUser, loginUser, logoutUser };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
