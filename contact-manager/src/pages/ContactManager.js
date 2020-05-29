@@ -4,29 +4,19 @@ import Nav from 'react-bootstrap/Nav';
 import Modal from 'react-bootstrap/Modal';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import Carousel from 'react-bootstrap/Carousel';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import contact from './../data/Contact_Image.png';
 import Figure from 'react-bootstrap/Figure';
-import Card from 'react-bootstrap/Card'
-import md5 from 'md5';
+import Card from 'react-bootstrap/Card';
 import './styles.css';
 
-const buttonLink = 'bg-transparent border-0 p-0 text-primary';
-
-export class Home extends Component {
+export default class ContactManager extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = { deleteContact: false, addModal: false, editModal: false, logout: false };
-	}
-
-	componentDidMount() {
-		// fetch('http://dummy.restapiexample.com/api/v1/employees')
-		// 	.then(data => data.json())
-		// 	.then(json => alert(JSON.stringify(json.data)))
 	}
 
 	renderAddForm() {
@@ -67,13 +57,13 @@ export class Home extends Component {
 				<Modal.Body className = 'modalbg'>
 					<Container>
 						<Row>
-						<Col>
-							{ this.renderAddForm() }
-						</Col>
-						<Col className = 'center' lg = '5'>
-							<Figure.Image width = '60%' src = { contact } alt = 'Contact_Image' />
-							<Figure.Caption id = 'thanks' className = 'invisible'>Contact added.</Figure.Caption>
-						</Col>
+							<Col>
+								{ this.renderAddForm() }
+							</Col>
+							<Col className = 'center' lg = '5'>
+								<Figure.Image width = '60%' src = { contact } alt = 'Contact_Image' />
+								<Figure.Caption id = 'thanks' className = 'invisible'>Contact added.</Figure.Caption>
+							</Col>
 						</Row>
 					</Container>
 				</Modal.Body>
@@ -119,13 +109,13 @@ export class Home extends Component {
 				<Modal.Body className = 'modalbg'>
 					<Container>
 						<Row>
-						<Col>
-							{ this.renderEditForm() }
-						</Col>
-						<Col className = 'center' lg = '5'>
-							<Figure.Image width = '60%' src = { contact } alt = 'Contact_Image' />
-							<Figure.Caption id = 'thanks' className = 'invisible'>Contact information updated.</Figure.Caption>
-						</Col>
+							<Col>
+								{ this.renderEditForm() }
+							</Col>
+							<Col className = 'center' lg = '5'>
+								<Figure.Image width = '60%' src = { contact } alt = 'Contact_Image' />
+								<Figure.Caption id = 'thanks' className = 'invisible'>Contact information updated.</Figure.Caption>
+							</Col>
 						</Row>
 					</Container>
 				</Modal.Body>
@@ -153,56 +143,50 @@ export class Home extends Component {
 		);
 	}
 
-	renderCards(){
-		return(
+	renderCards() {
+		return (
 			<div>
-			<Card className = 'cardhead'>
+				<Card className = 'cardhead'>
   				<Card.Header>
-					<Form.Row>
-						<Col className = 'searchbar'>
-      						<Form.Control size = 'lg' type="text" placeholder="Search Contacts" className="mr-sm-2 searchcolor" />
-						</Col>
-						<Col>
+						<Form.Row>
+							<Col className = 'searchbar'>
+      						<Form.Control size = 'lg' type = "text" placeholder = "Search Contacts" className = "mr-sm-2 searchcolor" />
+							</Col>
+							<Col>
       						<Button size = 'lg' className = 'buttoncolor'>Search</Button>
-						</Col>
-						<Col>
-							<Button className = 'float-right buttoncolor' size = 'lg' variant='outline-dark' eventKey = 'add-contact' onClick = {() => this.setState({ addModal: true})}>
+							</Col>
+							<Col>
+								<Button className = 'float-right buttoncolor' size = 'lg' variant = 'outline-dark' eventKey = 'add-contact' onClick = { () => this.setState({ addModal: true }) }>
 								Add Contact
+								</Button>
+							</Col>
+    				</Form.Row>
+					</Card.Header>
+				</Card>
+				<Card className = 'cardbody mx-auto'>
+					<Row>
+						<Col>
+							<Card.Body>
+								<p>FirstName          LastName</p>
+								<p>Email              Phone#</p>
+								<p>Address</p>
+							</Card.Body>
+						</Col>
+						<Col className = 'center float-right'>
+							<Button className = 'float-right buttoncolorform' size = 'lg' variant = 'outline-dark' eventKey = 'add-contact' onClick = { () => this.setState({ editModal: true }) }>
+						Edit Contact
+							</Button>
+							<Button className = 'float-right buttoncolorform' size = 'lg' variant = 'outline-dark' eventKey = 'add-contact' onClick = { () => this.setState({ deleteContact: true }) }>
+						Delete Contact
 							</Button>
 						</Col>
-    				</Form.Row>
-				</Card.Header>
-			</Card>
-            <Card className = 'cardbody mx-auto'>
-				<Row>
-				<Col>
-				<Card.Body>
-					<p>FirstName          LastName</p>
-					<p>Email              Phone#</p>
-					<p>Address</p>
-				</Card.Body>
-				</Col>
-				<Col className = 'center float-right'>
-					<Button className = 'float-right buttoncolorform' size = 'lg' variant='outline-dark' eventKey = 'add-contact' onClick = {() => this.setState({ editModal: true})}>
-						Edit Contact
-					</Button>
-					<Button className = 'float-right buttoncolorform' size = 'lg' variant='outline-dark' eventKey = 'add-contact' onClick = {() => this.setState({ deleteContact: true})}>
-						Delete Contact
-					</Button>
-				</Col>
-				</Row>
-			</Card>
+					</Row>
+				</Card>
 			</div>
 		);
 	}
 
 	render() {
-		let newUser = {
-			name: '',
-			email: '',
-			password: ''
-		}
-	
 		return (
 			<div>
 				{ this.renderNavigation() }
