@@ -3,6 +3,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import { logoutUser } from '../config';
+import { NavLink, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 class NavBar extends Component {
@@ -11,23 +12,36 @@ class NavBar extends Component {
 
 		if (loggedIn) {
 			return (
-				<div>
-					<Nav.Item>
-						<Navbar.Text>Hello, { FirstName }!</Navbar.Text>
+				<>
+					<Nav.Item key = 'greeting'>
+						<Navbar.Text className = 'text-primary px-2'>Hello, { FirstName }!</Navbar.Text>
 					</Nav.Item>
-					<Nav.Item>
-						<Nav.Link eventKey = 'logout' onSelect = { () => logoutUser() }>
-							Logout
-						</Nav.Link>
+					<Nav.Item key = 'home'>
+						<NavLink to = '/' className = 'nav-link'>
+							Home
+						</NavLink>
 					</Nav.Item>
-				</div>
+					<Nav.Item key = 'contact'>
+						<NavLink to = '/contacts' className = 'nav-link'>
+							Contacts
+						</NavLink>
+					</Nav.Item>
+					<Nav.Item key = 'logout'>
+						<Link to = '/' className = 'nav-link'>
+							<button className = 'bg-transparent border-0 p-0 nav-link' onClick = { () => logoutUser() }>
+									Log out
+							</button>
+						</Link>
+
+					</Nav.Item>
+				</>
 			);
 		}
 
 		return (
 			Object.entries(onSelect).map(([text, onClick]) => {
 				return (
-					<Nav.Item>
+					<Nav.Item key = { text }>
 						<Nav.Link eventKey = { text } onSelect = { () => onClick() }>
 							{ text }
 						</Nav.Link>
@@ -41,7 +55,9 @@ class NavBar extends Component {
 		return (
 			<Navbar bg = 'dark' variant = 'dark' sticky = 'top'>
 				<Container expand = 'sm'>
-					<Navbar.Brand>Small Project</Navbar.Brand>
+					<Navbar.Brand>
+						<Link to = '/' className = 'text-white'>Small Project</Link>
+					</Navbar.Brand>
 					<Nav className = 'ml-auto'>
 						{ this.renderLinks() }
 					</Nav>

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Modal, Container, Button, Carousel, Row, Col, Form, Figure } from './';
+import { Modal, Container, Carousel, Row, Col, Figure } from './';
 import cactus from '../data/cactus.png';
 import md5 from 'md5';
 import './styles.css';
-import NavBar from '../components/NavBar';
+import { NavBar, LoginForm, SignUpForm } from '../components';
 import { connect } from 'react-redux';
 import { createUser, loginUser, logoutUser } from '../config';
-import { Link } from 'react-router-dom';
 
 const buttonLink = 'bg-transparent border-0 p-0 text-primary';
 
@@ -17,63 +16,19 @@ class Home extends Component {
 		this.state = { registerModal: false, loginModal: false };
 	}
 
-	renderRegisterForm() {
-		const signup = () => {
-			this.thanks.className = 'visible';
-			this.props.createUser({ User: this.user.value, Password: md5(this.password.value),
-				                      FirstName: this.fName.value, LastName: this.lName.value });
-		};
+	signup(values) {
+		const { username, password, firstName, lastName } = values;
 
-		return (
-			<div>
-				<Form>
-					<Form.Group>
-						<Form.Label>Name</Form.Label>
-						<Row>
-							<Col sm = '5'>
-								<Form.Control type = 'text' placeholder = 'First name' ref = { ref => (this.fName = ref) } />
-							</Col>
-							<Col>
-								<Form.Control type = 'text' placeholder = 'Last name' ref = { ref => (this.lName = ref) } />
-							</Col>
-						</Row>
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Username</Form.Label>
-						<Form.Control type = 'text' placeholder = 'myUsername' ref = { ref => (this.user = ref) } />
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Password</Form.Label>
-						<Form.Control type = 'password' placeholder = 'Password' ref = { ref => (this.password = ref) } />
-					</Form.Group>
-				</Form>
-				<Button onClick = { () => signup() }>Submit</Button>
-			</div>
-		);
+		this.thanks.className = 'visible';
+		this.props.createUser({ User: username, Password: md5(password),
+		                        FirstName: firstName, LastName: lastName });
 	}
 
-	renderLoginForm() {
-		const login = () => {
-			this.signIn.className = 'visible';
+	login(values) {
+		const { username, password } = values;
 
-			this.props.loginUser({ 'User': this.user.value, 'Password': md5(this.password.value) });
-		};
-
-		return (
-			<div>
-				<Form>
-					<Form.Group>
-						<Form.Label>Username</Form.Label>
-						<Form.Control type = 'text' placeholder = 'CoolKid123' ref = { ref => (this.user = ref) } />
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Password</Form.Label>
-						<Form.Control type = 'password' placeholder = 'Password' ref = { ref => (this.password = ref) } />
-					</Form.Group>
-				</Form>
-				<Button onClick = { () => login() }>Log in</Button>
-			</div>
-		);
+		this.signIn.className = 'visible';
+		this.props.loginUser({ 'User': username, 'Password': md5(password) });
 	}
 
 	renderRegisterModal() {
@@ -89,13 +44,14 @@ class Home extends Component {
 								<p className = 'smallText'>Already have an account?<br />
 									<button
 										className = { buttonLink }
-										onClick = { () => this.setState({ loginModal: true, registerModal: false }) }
+										onClick = { () => this.setState({ registerModal: false },
+											() => this.setState({ loginModal: true })) }
 									>
 										Sign in
 									</button>
 									{ ' ' }instead!
 								</p>
-								{ this.renderRegisterForm() }
+								<SignUpForm onSubmit = { (values) => this.signup(values) } />
 							</Col>
 							<Col className = 'center' lg = '5'>
 								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
@@ -129,13 +85,14 @@ class Home extends Component {
 								<p className = 'smallText'>Don't have an account?<br />
 									<button
 										className = { buttonLink }
-										onClick = { () => this.setState({ registerModal: true, loginModal: false }) }
+										onClick = { () => this.setState({ loginModal: false },
+											() => this.setState({ registerModal: true })) }
 									>
 										Sign up
 									</button>
 									{ ' ' }instead!
 								</p>
-								{ this.renderLoginForm() }
+								<LoginForm onSubmit = { values => this.login(values) } />
 							</Col>
 						</Row>
 					</Container>
