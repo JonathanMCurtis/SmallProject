@@ -64,20 +64,22 @@ const validateContact = values => {
 
 const FormComponent = (errors, touched, fields, active = true, buttonTitle = 'Submit') => {
 	return (
-		<Form className = { (!active && 'disable') || null }>
+		<Form>
 			{ fields.map((row, idx) => {
 				return (
 					<Row key = { idx } className = 'form-group'>
 						{ row.map(({ sm, key, text, ...extra }) => {
 							return (
 								<Col key = { key } sm = { sm }>
-									<label htmlFor = { key }>{ text }</label>
-									{ !text && <div style = {{ marginBottom: 0.5 + 'rem' }} /> }
+									<label className = { (text && 'visible') || 'invisible' } htmlFor = { key }>
+										{ text || 'Label' }
+									</label>
 									<Field
 										className = { errors[key] && touched[key] ? 'text-input error' : 'text-input' }
 										id = { key }
 										name = { key }
 										type = { extra.type || 'text' }
+										readOnly = { !active }
 										{ ...extra }
 									/>
 									<ErrorMessage render = { msg => <div className = 'error'>{ msg }</div> } name = { key } />
@@ -104,8 +106,7 @@ export const LoginForm = ({ onSubmit }) => {
 			initialValues = {{ username: '', password: '' }}
 			validate = { validateLogin }
 			onSubmit = { (values, { setSubmitting }) => {
-				onSubmit(values);
-				setTimeout(() => history.push('/contacts'), 500);
+				onSubmit(values).then(error => !error && setTimeout(() => history.push('/contacts'), 500));
 				setSubmitting(false);
 			} }
 		>
@@ -128,8 +129,7 @@ export const SignUpForm = ({ onSubmit }) => {
 			initialValues = {{ firstName: '', lastName: '', username: '', password: '' }}
 			validate = { validateSignUp }
 			onSubmit = { (values, { setSubmitting }) => {
-				onSubmit(values);
-				setTimeout(() => history.push('/contacts'), 500);
+				onSubmit(values).then(error => !error && setTimeout(() => history.push('/contacts'), 500));
 				setSubmitting(false);
 			} }
 		>
@@ -160,7 +160,10 @@ export const ContactForm = ({ initial = {}, onSubmit, active, buttonTitle }) => 
 		<Formik
 			initialValues = {{ firstName: FirstName, lastName: LastName, email: Email, phone: Phone }}
 			validate = { validateContact }
-			onSubmit = { values => onSubmit(values) }
+			onSubmit = { (values, { setSubmitting }) => {
+				onSubmit(values);
+				setSubmitting(false);
+			} }
 		>
 			{ ({ errors, touched }) => FormComponent(errors, touched, fields, active, buttonTitle) }
 		</Formik>
