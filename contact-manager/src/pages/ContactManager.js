@@ -68,16 +68,26 @@ class ContactManager extends Component {
 		let title;
 		const { FirstName, LastName, Email, Phone } = contact;
 
-		if (Object.entries(contact).length === 0 && !editing)
+		if (Object.entries(contact).length === 0 && !editing) {
 			return <Figure.Image className = 'gifloc' width = '35%' src = { contain } alt = 'Contain' />;
-		else if (Object.entries(contact).length === 0 && editing)
+		}
+		else if (Object.entries(contact).length === 0 && editing) {
 			title = 'Add Contact';
-		else
-			title = 'Update Contact';
-		// console.log(contact);
 
-		return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-			active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
+				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+		}
+		else if (Object.entries(contact).length !== 0 && editing) {
+			title = 'Update Contact';
+
+			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
+				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+		}
+		// console.log(contact);
+		else {
+			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
+				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+		}
 	}
 
 	renderNavBar() {
