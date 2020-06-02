@@ -75,18 +75,19 @@ class ContactManager extends Component {
 			title = 'Add Contact';
 
 			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+				active = { this.state.editing } buttonTitle = { title }
+				onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID, 'ContactID': this.props.ContactID }) } />;
 		}
 		else if (Object.entries(contact).length !== 0 && editing) {
 			title = 'Update Contact';
 
 			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.updateContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
 		}
 		// console.log(contact);
 		else {
 			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
+				active = { this.state.editing } buttonTitle = { title } />;
 		}
 	}
 
