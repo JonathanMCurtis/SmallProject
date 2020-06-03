@@ -1,11 +1,15 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BsPencil, BsTrash, BsPlus } from 'react-icons/bs';
-import { Navbar, Container, Nav, ButtonGroup, Button, Modal, Row, Col, ListGroup } from './';
+import { BsPencil, BsTrash, BsPlus, BsJustify } from 'react-icons/bs'; // added BsJustify
+import { Navbar, Container, Nav, ButtonGroup, Button, Modal, Row, Col, ListGroup, Figure } from './'; // added Figure
 import { createContact, deleteContact, getContacts, updateContact, searchContact } from '../config';
 import { ContactForm, SearchForm } from '../components';
+import sunset from './../data/SunsetLogo.png'; // added images
+import angry from './../data/AngryFace.png';
 import './styles.css';
+
+const buttonLink = 'bg-transparent border-0 p-0 text-primary';
 
 class ContactManager extends Component {
 	constructor(props) {
@@ -38,6 +42,18 @@ class ContactManager extends Component {
 	emptyInfo() {
 		return (
 			<>Hello</>
+		);
+	}
+
+	// new "not logged in" function
+	renderNotLoggedIn() {
+		return (
+			<Col className = 'center'>
+				<Figure.Image width = '35%' src = { angry } alt = 'Angry' />
+				<p className = 'nocontacts'>
+					You're not logged in. Click the "Login" button.
+				</p>
+			</Col>
 		);
 	}
 
@@ -78,8 +94,18 @@ class ContactManager extends Component {
 		let submit;
 		let contacts = Object.entries(contact).length;
 
+		// added the "no contact selected" code
 		if (!contacts && !editing) {
-			return this.emptyInfo();
+			return (
+				<>
+					<div className = 'center'>
+						<Figure.Image width = '55%' src = { sunset } alt = 'Sunset' />
+						<p className = 'nocontacts'>
+						No contact selected.
+						</p>
+					</div>
+				</>
+			);
 		}
 		else if (!contacts && editing) {
 			title = 'Add Contact';
@@ -138,9 +164,15 @@ class ContactManager extends Component {
 		);
 	}
 
+	// added the "no contacts added" code
 	noContacts() {
 		return (
-			<>You don't seem to have any contacts. Add some!</>
+			<>
+				<p className = 'nocontacts'>There are no contacts.{ ' ' }
+					<button className = { buttonLink } onClick = { () => this.setState({ editing: true, contact: {} }) }>Add Some!</button>
+				</p>
+				<BsJustify size = '100px' />
+			</>
 		);
 	}
 

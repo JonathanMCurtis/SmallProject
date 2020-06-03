@@ -5,7 +5,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import md5 from 'md5';
 import '../pages/styles.css';
-import cactus from '../data/cactus.png';
+import sunset2 from './../data/Sunsetlogo2.png'; // added images
+import sunset from './../data/SunsetLogo.png';
 import { LoginForm, SignUpForm } from './';
 import { Modal, Container, Row, Col, Figure, Collapse, Alert } from '../pages';
 import { createUser, loginUser, logoutUser, getContacts } from '../config';
@@ -48,6 +49,7 @@ class NavBar extends Component {
 		return ErrorID;
 	}
 
+	// changed from cactus to logo
 	renderRegisterModal() {
 		return (
 			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false }) }>
@@ -71,7 +73,7 @@ class NavBar extends Component {
 								<SignUpForm onSubmit = { (values) => this.signup(values) } />
 							</Col>
 							<Col className = 'center' lg = '5'>
-								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
+								<Figure.Image width = '83%' src = { sunset } alt = 'Sunset' />
 								<Figure.Caption ref = { ref => this.thanks = ref } className = 'invisible'>
 									Hello! Thank you for signing up.
 								</Figure.Caption>
@@ -83,6 +85,7 @@ class NavBar extends Component {
 		);
 	}
 
+	// changed from cactus to logo
 	renderLoginModal() {
 		return (
 			<Modal centered size = 'lg' show = { this.state.loginModal } onHide = { () => this.setState({ loginModal: false }) }>
@@ -93,7 +96,7 @@ class NavBar extends Component {
 					<Container>
 						<Row>
 							<Col className = 'center divider' lg = '5'>
-								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
+								<Figure.Image width = '83%' src = { sunset } alt = 'Sunset' />
 								<Collapse in = { this.state.renderMessage }>
 									<Figure.Caption ref = { ref => this.signIn = ref }>
 										Signing in...
@@ -173,11 +176,13 @@ class NavBar extends Component {
 		);
 	}
 
+	// added logo next to "Small Project"
 	render() {
 		return (
 			<Navbar bg = 'dark' variant = 'dark' sticky = 'top'>
 				<Container expand = 'sm'>
 					<Navbar.Brand>
+						<Figure.Image width = '12%' src = { sunset2 } alt = 'Sunset' />
 						<Link to = '/' className = 'text-white'>Small Project</Link>
 					</Navbar.Brand>
 					<Nav className = 'ml-auto'>

@@ -42,3 +42,9 @@
 .scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* used for "no contacts added" and "no contact selected" text for now */
+.nocontacts{
+	font-size: 24px;
+	font-weight: bold;
+}
