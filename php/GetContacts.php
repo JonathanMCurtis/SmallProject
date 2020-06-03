@@ -5,8 +5,15 @@
     // Gets the information provided in the API call
     $received = file_get_contents('php://input');
     $inputData = getRequestInfo($received);
-    if(ensureProps($inputData, $requiredProps)) {
+
+
+    if (ensureProps($inputData, $requiredProps)) {
         $UserID = $inputData["UserID"];
+
+        if ($UserID == -1 && $_SESSION.isset($_SESSION['UserID']))
+        {
+            $UserID = $_SESSION['UserID'];
+        }
 
         // Opens an SQL connection to the database using the stored credentials
         $ini = parse_ini_file("../../php/temp.ini");
@@ -28,6 +35,6 @@
                 $connection->close();
                 returnWithError(204, "No contacts associated with that User ID.");
             }
+            $connection->close();
         }
-        $connection->close();
     }
