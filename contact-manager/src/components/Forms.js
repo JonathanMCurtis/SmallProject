@@ -1,9 +1,8 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
+import { Row, Col, Button } from '../pages';
 import { useHistory } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { BsSearch } from 'react-icons/bs';
 import './styles.css';
 
 const validateLogin = values => {
@@ -62,7 +61,7 @@ const validateContact = values => {
 	return errors;
 };
 
-const FormComponent = (errors, touched, fields, active = true, buttonTitle = 'Submit') => {
+const FormComponent = ({ errors, touched, fields, active = true, buttonTitle = 'Submit' }) => {
 	return (
 		<Form>
 			{ fields.map((row, idx) => {
@@ -110,7 +109,7 @@ export const LoginForm = ({ onSubmit }) => {
 				setSubmitting(false);
 			} }
 		>
-			{ ({ errors, touched }) => FormComponent(errors, touched, fields) }
+			{ ({ errors, touched }) => FormComponent({ errors, touched, fields }) }
 		</Formik>
 	);
 };
@@ -133,7 +132,7 @@ export const SignUpForm = ({ onSubmit }) => {
 				setSubmitting(false);
 			} }
 		>
-			{ ({ errors, touched }) => FormComponent(errors, touched, fields) }
+			{ ({ errors, touched }) => FormComponent({ errors, touched, fields }) }
 		</Formik>
 	);
 };
@@ -147,7 +146,7 @@ export const SignUpForm = ({ onSubmit }) => {
  * @param {String}   buttonTitle  Title for submit button
  */
 
-export const ContactForm = ({ initial = {}, onSubmit, active, buttonTitle }) => {
+export const ContactForm = ({ initial, onSubmit, active, buttonTitle }) => {
 	const { FirstName, LastName, Email, Phone } = initial;
 	const fields = [
 		[{ key: 'firstName', text: 'Name', placeholder: 'First Name', sm: '5' },
@@ -159,13 +158,46 @@ export const ContactForm = ({ initial = {}, onSubmit, active, buttonTitle }) => 
 	return (
 		<Formik
 			initialValues = {{ firstName: FirstName, lastName: LastName, email: Email, phone: Phone }}
+			enableReinitialize = { true }
 			validate = { validateContact }
 			onSubmit = { (values, { setSubmitting }) => {
 				onSubmit(values);
 				setSubmitting(false);
 			} }
 		>
-			{ ({ errors, touched }) => FormComponent(errors, touched, fields, active, buttonTitle) }
+			{ ({ errors, touched }) => FormComponent({ errors, touched, fields, active, buttonTitle }) }
+		</Formik>
+	);
+};
+
+export const SearchForm = ({ onSubmit }) => {
+	return (
+		<Formik
+			initialValues = {{ search: '' }}
+			onSubmit = { (values, { setSubmitting }) => {
+				onSubmit(values);
+				setSubmitting(false);
+			} }
+		>
+			{ ({ touched }) => (
+				<Form>
+					<Row>
+						<Col lg = '10'>
+							<Field
+								className = { touched.search && 'text-input' }
+								id = 'search'
+								name = 'search'
+								type = 'text'
+								placeholder = 'Search Contacts'
+							/>
+						</Col>
+						<Col className = 'align-self-center ml-n3'>
+							<Button variant = 'link ml-n2' type = 'submit'><BsSearch size = '20' /></Button>
+						</Col>
+					</Row>
+				</Form>
+
+			) }
 		</Formik>
 	);
 };
