@@ -32,7 +32,6 @@ const initialState = {
 		Error: '',
 		ErrorID: ''
 	},
-	contact: {},
 	search: {},
 	loggedIn: false
 };
@@ -150,11 +149,7 @@ export const createContact = contact => {
 	return dispatch => {
 		return fetch(CreateContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				dispatch({ type: 'CREATE_CONTACT', data });
-				if (!data.ErrorID)
-					getContacts({ UserID: contact.userID });
-			});
+			.then(data => dispatch({ type: 'CREATE_CONTACT', data }));
 	};
 };
 
@@ -172,7 +167,6 @@ export const getContacts = user => {
 		return fetch(GetContacts, fetchPOST(user))
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
 				if (!data.ErrorID)
 					dispatch({ type: 'GET_CONTACTS_SUCCESS', data });
 				else
@@ -199,11 +193,7 @@ export const updateContact = contact => {
 	return dispatch => {
 		return fetch(UpdateContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				dispatch({ type: 'UPDATE_CONTACT', data });
-				if (!data.ErrorID)
-					getContacts({ UserID: contact.UserID });
-			});
+			.then(data => dispatch({ type: 'UPDATE_CONTACT', data }));
 	};
 };
 
@@ -221,11 +211,8 @@ export const deleteContact = contact => {
 	return dispatch => {
 		return fetch(DeleteContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				dispatch({ type: 'DELETE_CONTACT', data });
-				if (!data.ErrorID)
-					getContacts({ UserID: contact.UserID });
-			});
+			.then(data => { console.log('Delete contact', data); dispatch({ type: 'DELETE_CONTACT', data }) }) 
+			.catch(error => console.error('FUCK', error));
 	};
 };
 
@@ -243,10 +230,6 @@ export const searchContact = contact => {
 	return dispatch => {
 		return fetch(SearchContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				if (data.ErrorID)
-					data = {};
-				dispatch({ type: 'SEARCH_CONTACT', data });
-			});
+			.then(data => dispatch({ type: 'SEARCH_CONTACT', data }));
 	};
 };
