@@ -7,7 +7,7 @@ import md5 from 'md5';
 import '../pages/styles.css';
 import cactus from '../data/cactus.png';
 import { LoginForm, SignUpForm } from './';
-import { Modal, Container, Row, Col, Figure } from '../pages';
+import { Modal, Container, Row, Col, Figure, Collapse, Alert } from '../pages';
 import { createUser, loginUser, logoutUser, getContacts } from '../config';
 
 const buttonLink = 'bg-transparent border-0 p-0 text-primary';
@@ -16,7 +16,7 @@ class NavBar extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { registerModal: false, loginModal: false };
+		this.state = { registerModal: false, loginModal: false, renderMessage: false, renderError: false };
 	}
 
 	signup(values) {
@@ -31,15 +31,18 @@ class NavBar extends Component {
 	async login(values) {
 		const { username, password } = values;
 
-		this.signIn.className = 'visible';
+		// this.signIn.className = 'visible';
 		await this.props.loginUser({ 'User': username, 'Password': md5(password) });
 
 		const { UserID, ErrorID } = this.props;
 
 		if (ErrorID !== 401) {
+			this.setState({ renderMessage: true });
 			await this.props.getContacts({ UserID });
-			console.log(this.props.Contacts);
 			setTimeout(() => this.setState({ loginModal: false }), 500);
+		}
+		else {
+			this.setState({ renderError: true });
 		}
 
 		return ErrorID;
@@ -91,9 +94,11 @@ class NavBar extends Component {
 						<Row>
 							<Col className = 'center divider' lg = '5'>
 								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption ref = { ref => this.signIn = ref } className = 'invisible'>
-									Signing in...
-								</Figure.Caption>
+								<Collapse in = { this.state.renderMessage }>
+									<Figure.Caption ref = { ref => this.signIn = ref }>
+										Signing in...
+									</Figure.Caption>
+								</Collapse>
 							</Col>
 							<Col>
 								<p className = 'smallText'>Don't have an account?<br />
@@ -106,6 +111,11 @@ class NavBar extends Component {
 									</button>
 									{ ' ' }instead!
 								</p>
+								<Collapse in = { this.state.renderError }>
+									<div class = 'alert alert-danger'>
+										<div class = 'alert alert-danger'>Incorrect username or password.</div>
+									</div>
+								</Collapse>
 								<LoginForm onSubmit = { values => this.login(values) } />
 							</Col>
 						</Row>
