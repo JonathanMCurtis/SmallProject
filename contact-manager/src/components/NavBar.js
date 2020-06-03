@@ -8,7 +8,7 @@ import '../pages/styles.css';
 import cactus from '../data/cactus.png';
 import { LoginForm, SignUpForm } from './';
 import { Modal, Container, Row, Col, Figure } from '../pages';
-import { createUser, loginUser, logoutUser } from '../config';
+import { createUser, loginUser, logoutUser, getContacts } from '../config';
 
 const buttonLink = 'bg-transparent border-0 p-0 text-primary';
 
@@ -28,12 +28,21 @@ class NavBar extends Component {
 		setTimeout(() => this.setState({ registerModal: false }), 500);
 	}
 
-	login(values) {
+	async login(values) {
 		const { username, password } = values;
 
 		this.signIn.className = 'visible';
-		this.props.loginUser({ 'User': username, 'Password': md5(password) });
-		setTimeout(() => this.setState({ loginModal: false }), 500);
+		await this.props.loginUser({ 'User': username, 'Password': md5(password) });
+
+		const { UserID, ErrorID } = this.props;
+
+		if (ErrorID !== 401) {
+			await this.props.getContacts({ UserID });
+			console.log(this.props.Contacts);
+			setTimeout(() => this.setState({ loginModal: false }), 500);
+		}
+
+		return ErrorID;
 	}
 
 	renderRegisterModal() {
@@ -120,7 +129,7 @@ class NavBar extends Component {
 						<Navbar.Text className = 'text-primary px-2'>Hello, { FirstName }!</Navbar.Text>
 					</Nav.Item>
 					<Nav.Item key = 'home'>
-						<NavLink to = '/' className = 'nav-link'>
+						<NavLink exact to = '/' className = 'nav-link'>
 							Home
 						</NavLink>
 					</Nav.Item>
@@ -172,11 +181,11 @@ class NavBar extends Component {
 	}
 }
 
-const mapDispatchToProps = { createUser, loginUser, logoutUser };
+const mapDispatchToProps = { createUser, loginUser, logoutUser, getContacts };
 const mapStateToProps = ({ loggedIn, currentUser }) => {
-	const { FirstName, ErrorID } = currentUser;
+	const { FirstName, ErrorID, UserID, Contacts } = currentUser;
 
-	return { loggedIn, FirstName, ErrorID };
+	return { loggedIn, FirstName, ErrorID, UserID, Contacts };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

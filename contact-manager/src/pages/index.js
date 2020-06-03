@@ -12,3 +12,7 @@ export { default as Row } from 'react-bootstrap/Row';
 export { default as Col } from 'react-bootstrap/Col';
 export { default as Form } from 'react-bootstrap/Form';
 export { default as Figure } from 'react-bootstrap/Figure';
+export { default as Nav } from 'react-bootstrap/Nav';
+export { default as ButtonGroup } from 'react-bootstrap/ButtonGroup';
+export { default as ListGroup } from 'react-bootstrap/ListGroup';
+export { default as Navbar } from 'react-bootstrap/Navbar';

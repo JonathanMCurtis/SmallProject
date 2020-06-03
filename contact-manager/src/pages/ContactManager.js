@@ -1,201 +1,212 @@
 /* eslint-disable max-len */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
-import { BsFillCaretRightFill } from 'react-icons/bs';
-import contact2 from './../data/Proj-Logo-Trans2.png';
-import contact3 from './../data/Proj-Logo-Trans.png';
-import contain from './../data/OopsKitty.gif';
-import Figure from 'react-bootstrap/Figure';
-import { BsPencil } from 'react-icons/bs';
-import { BsTrash } from 'react-icons/bs';
-import { BsPlus } from 'react-icons/bs';
 import { connect } from 'react-redux';
+import { BsPencil, BsTrash, BsPlus } from 'react-icons/bs';
+import { Navbar, Container, Nav, ButtonGroup, Button, Modal, Row, Col, ListGroup } from './';
 import { createContact, deleteContact, getContacts, updateContact, searchContact } from '../config';
-import { Link } from 'react-router-dom';
-import md5 from 'md5';
-import { ContactForm } from '../components';
+import { ContactForm, SearchForm } from '../components';
 import './styles.css';
 
 class ContactManager extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { contact: {}, editing: false, deleteContact: false, logout: false, infoCard: false, editCard: false, addCard: false };
+		this.state = { contact: {}, noneSelected: true, searching: false, editing: false, deleteContact: false };
+		this.initialContact = { FirstName: '', LastName: '', Email: '', Phone: '' };
 	}
 
-	componentDidMount() {
-		this.props.getContacts({ UserID: this.props.UserID });
-	}
-
-	renderDeleteContactModal() {
+	renderDeleteAlert() {
 		return (
-			<Modal className = 'modalcolor' centered size = 'md' show = { this.state.deleteContact } onHide = { () => this.setState({ deleteContact: false }) }>
-				<Modal.Body className = 'modalbg'>
-					<Col>
-						<Row>
-							<p className = 'deletefont'>Are you sure you want to delete this contact?</p>
-						</Row>
-						<Row className = 'rowspace'>
-							<Col>
-								<Button className = 'deletebutton' size = 'lg' eventKey = 'delete'
-									onClick = { () => this.props.deleteContact({ 'UserID': this.props.UserID, 'ContactID': this.props.ContactID }) }>
-									<p className = 'yesfont'>Yes</p>
-								</Button>
-							</Col>
-							<Col>
-								<Button className = 'deletebutton2' size = 'lg' eventKey = 'delete' onClick = { () => this.setState({ deleteContact: false }) }>
-									<p className = 'yesfont'>No</p>
-								</Button>
-							</Col>
-						</Row>
-					</Col>
+			<Modal centered size = 'md' show = { this.state.deleteContact } onHide = { () => this.setState({ deleteContact: false }) }>
+				<Modal.Header closeButton>
+					<Modal.Title>Are you sure you want to delete this contact?</Modal.Title>
+				</Modal.Header>
+				<Modal.Body className = 'center'>
+					<ButtonGroup>
+						<Button size = 'lg' onClick = { () => this.contact('delete') }>
+							Yes
+						</Button>
+						<Button size = 'lg' onClick = { () => this.setState({ deleteContact: false }) }>
+							No
+						</Button>
+					</ButtonGroup>
 				</Modal.Body>
 			</Modal>
 		);
 	}
 
-	renderAddCard() {
-		const { editing, contact } = this.state;
-		let title;
-		const { FirstName, LastName, Email, Phone } = contact;
-
-		if (Object.entries(contact).length === 0 && !editing) {
-			return <Figure.Image className = 'gifloc' width = '35%' src = { contain } alt = 'Contain' />;
-		}
-		else if (Object.entries(contact).length === 0 && editing) {
-			title = 'Add Contact';
-
-			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-				active = { this.state.editing } buttonTitle = { title }
-				onSubmit = { () => this.props.createContact({ 'contact': this.props.contact, 'UserID': this.props.UserID, 'ContactID': this.props.ContactID }) } />;
-		}
-		else if (Object.entries(contact).length !== 0 && editing) {
-			title = 'Update Contact';
-
-			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-				active = { this.state.editing } buttonTitle = { title } onSubmit = { () => this.props.updateContact({ 'contact': this.props.contact, 'UserID': this.props.UserID }) } />;
-		}
-		// console.log(contact);
-		else {
-			return <ContactForm initial = {{ FirstName, LastName, Email, Phone }}
-				active = { this.state.editing } buttonTitle = { title } />;
-		}
+	emptyInfo() {
+		return (
+			<>Hello</>
+		);
 	}
 
-	renderNavBar() {
-		// const contact = this.props.Contacts; // this.props.Contacts
+	async contact(action, values = {}) {
+		const { firstName, lastName, email, phone } = values;
+		const { UserID, getContacts, createContact, updateContact, deleteContact } = this.props;
 
-		const contact = {
-			'ABCDJ': { 'ContactID': '1', 'FirstName': 'John', 'LastName': 'NotJohn', 'Email': 'JohnNotJohn@gmail.com', 'Phone': '123-456-7890' },
-			'ABCDfJ': { 'ContactID': '2', 'FirstName': 'Joe', 'LastName': 'NotJoe', 'Email': 'JoeNotJoe@gmail.com', 'Phone': '123-456-7890' },
-			'ABCDJd': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'ABCDS': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'AFCDJ': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'ABCDJsa': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'DWOIdJ': { 'FirstName': 'Johnny', 'LastName': 'J' }
-		}; // this.props.Contacts
+		let contactInfo = {
+			FirstName: firstName || '',
+			LastName: lastName || '',
+			Email: email || '',
+			Phone: phone || '',
+			ContactID: this.state.contact.ContactID
+		};
 
-		// console.log(this.props.Contacts);
+		switch (action) {
+			case 'create':
+				await createContact({ UserID, ...contactInfo });
+				contactInfo.ContactID = this.props.ContactID;
+				break;
+			case 'delete':
+				await deleteContact({ UserID, ...contactInfo });
+				contactInfo = {};
+				break;
+			case 'update':
+				await updateContact({ UserID, ...contactInfo });
+				break;
+		}
 
-		const { ContactID, FirstName, LastName, Email, Phone } = contact;
-		const UserID = this.props.UserID;
+		if (!this.props.ErrorID) getContacts({ UserID });
+		this.setState({ contact: contactInfo });
+	}
+
+	renderContactInfo() {
+		const { editing, contact } = this.state;
+
+		let title;
+		let submit;
+		let contacts = Object.entries(contact).length;
+
+		if (!contacts && !editing) {
+			return this.emptyInfo();
+		}
+		else if (!contacts && editing) {
+			title = 'Add Contact';
+			submit = 'create';
+		}
+		else {
+			title = 'Update Contact';
+			submit = 'update';
+		}
 
 		return (
-			<Navbar variant = 'dark' sticky = 'top'>
-				<Col>
-					<Form inline>
-						<Form.Control size = 'lg' type = "text" placeholder = "Search Contacts" />
-						<Button size = 'lg' onClick = { () => this.props.searchContact({ 'UserID': this.props.UserID, 'Search': 'Search Contacts' }) } >
-							Search
-						</Button>
-					</Form>
-				</Col>
-				<Col>
-					<Nav className = 'float-right'>
-						<Button size = 'lg' eventKey = 'add-contact'
-							onClick = { () => this.setState({ editing: true, contact: {} }) }>
-							<BsPlus size = '40px' />
-						</Button>
-						<Button size = 'lg' eventKey = 'edit-contact'
-							onClick = { () => this.setState({ editing: true, contact: { FirstName, LastName, Email, Phone } }) }>
-							<BsPencil size = '40px' />
-						</Button>
-						<Button size = 'lg' eventKey = 'delete-contact'
-							onClick = { () => this.setState({ deleteContact: true }) }>
-							<BsTrash size = '40px' />
-						</Button>
-					</Nav>
-				</Col>
+			<ContactForm
+				initial = { (contacts && contact) || this.initialContact }
+				active = { editing }
+				buttonTitle = { title }
+				onSubmit = { values => this.contact(submit, values) }
+			/>
+		);
+	}
+
+	renderToolbar() {
+		const { UserID, searchContact } = this.props;
+
+		const searchQuery = query => {
+			searchContact({ UserID, Search: query })
+				.then(() => !this.props.search.ErrorID && this.setState({ searching: true }));
+		};
+
+		return (
+			<Navbar>
+				<Container>
+					<Col sm = '3' className = 'justify-content-between'>
+						<SearchForm onSubmit = { ({ search }) => searchQuery(search) } />
+					</Col>
+					<Col>
+						<Nav className = 'w-10 float-right justify-content-between'>
+							<BsPlus
+								as = 'button'
+								size = '18px'
+								onClick = { () => this.setState({ editing: true, contact: {} }) }
+							/>
+							{ Object.entries(this.state.contact).length !== 0 && <BsPencil
+								as = 'button'
+								size = '18px'
+								onClick = { () => this.setState({ editing: true }) }
+							/> &&
+							<BsTrash
+								as = 'button'
+								size = '18px'
+								onClick = { () => this.setState({ deleteContact: true }) }
+							/> }
+						</Nav>
+					</Col>
+				</Container>
 			</Navbar>
 		);
 	}
 
-	// onClick = { () => this.props.deleteContact({ 'ContactID': ContactID, 'UserID': UserID }) }
+	noContacts() {
+		return (
+			<>You don't seem to have any contacts. Add some!</>
+		);
+	}
 
-	renderList() {
-		// const contact = this.props.Contacts; // this.props.Contacts
-
-		const contact = {
-			'ABCDJ': { 'FirstName': 'John', 'LastName': 'NotJohn', 'Email': 'JohnNotJohn@gmail.com', 'Phone': '123-456-7890' },
-			'ABCDfJ': { 'FirstName': 'Joe', 'LastName': 'NotJoe', 'Email': 'JoeNotJoe@gmail.com', 'Phone': '123-456-7890' },
-			'ABCDJd': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'ABCDS': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'AFCDJ': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'ABCDJsa': { 'FirstName': 'John', 'LastName': 'Not John' },
-			'DWOIdJ': { 'FirstName': 'Johnny', 'LastName': 'J' }
-		}; // this.props.Contacts
-
-		console.log(this.props.Contacts);
+	renderContacts() {
+		const { searching } = this.state;
+		const { Contacts, search } = this.props;
 
 		return (
-			<>
+			<Container>
 				<Row>
-					<Col lg = '4' className = 'scrollbar'>
+					<Col sm = '3' className = 'scroll'>
 						<ListGroup>
-							{ Object.entries(contact).map(([ContactID, { FirstName, LastName, ...info }]) => {
+							{ (Contacts || searching) && Object.entries((searching && search) || Contacts).map(([ContactID, ContactInfo]) => {
+								const { FirstName, LastName } = ContactInfo;
+
 								return (
-									<ListGroup.Item action
-										onClick = { () => this.setState({ editing: false, contact: { ContactID, FirstName, LastName, ...info } }) }>
+									<ListGroup.Item
+										action
+										key = { ContactID }
+										onClick = { () => this.setState({ editing: false, contact: { ContactID, ...ContactInfo } }) }
+									>
 										{ FirstName } { LastName }
 									</ListGroup.Item>
 								);
-							}) }
+							}) || this.noContacts() }
 						</ListGroup>
 					</Col>
 					<Col>
-						{ this.renderAddCard() }
+						{ this.renderContactInfo() }
 					</Col>
 				</Row>
-			</>
+			</Container>
+		);
+	}
+
+	notLoggedIn() {
+		return (
+			<>Oops, you don't seem to be logged in!</>
 		);
 	}
 
 	render() {
-		return (
-			<div>
-				{ this.renderNavBar() }
-				{ this.renderList() }
-				{ this.renderDeleteContactModal() }
-			</div>
-		);
+		if (this.props.loggedIn) {
+			return (
+				<>
+					{ this.renderToolbar() }
+					{ this.renderContacts() }
+					{ this.renderDeleteAlert() }
+				</>
+			);
+		}
+		else {
+			return (
+				<>
+					{ this.notLoggedIn() }
+				</>
+			);
+		}
 	}
 }
 
-const mapStateToProps = ({ loggedIn, currentUser, search, contact }) => {
-	const { UserID, Contacts } = currentUser;
-
-	return { loggedIn, UserID, search, contact, Contacts };
-};
-
 const mapDispatchToProps = { createContact, deleteContact, getContacts, updateContact, searchContact };
+const mapStateToProps = ({ loggedIn, currentUser, search }) => {
+	const { UserID, Contacts, ContactID } = currentUser;
+
+	return { loggedIn, UserID, search, Contacts, ContactID };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactManager);
