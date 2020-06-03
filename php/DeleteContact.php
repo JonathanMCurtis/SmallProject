@@ -1,9 +1,10 @@
 <?php require './Functions.php';
     // Deletes a contact from the database
     $requiredProps = ["ContactID","UserID"];
-
     // Gets the information provided in the API call
-    $inputData = getRequestInfo();
+    $received = file_get_contents('php://input');
+
+    $inputData = getRequestInfo($received);
     if(ensureProps($inputData, $requiredProps)) {
 
         // Data to be inserted into database
