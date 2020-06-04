@@ -168,7 +168,6 @@ export const getContacts = user => {
 		return fetch(GetContacts, fetchPOST(user))
 			.then(response => response.json())
 			.then(data => {
-				console.log('getContacts in User.js', data);
 				if (!data.ErrorID)
 					dispatch({ type: 'GET_CONTACTS_SUCCESS', data });
 				else

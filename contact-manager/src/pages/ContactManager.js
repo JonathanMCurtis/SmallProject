@@ -192,7 +192,7 @@ class ContactManager extends Component {
 	renderBackground() {
 		return (
 			<div className = 'center'>
-				<img height = '55%' src = { halfSun } />
+				<img height = '55%' src = { halfSun } alt = 'HalfSun' />
 				<p>Thank you for using SummerTime Contacts!</p>
 			</div>
 		);

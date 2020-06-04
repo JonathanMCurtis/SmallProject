@@ -21,7 +21,7 @@ export default class Home extends Component {
 				</div>
 				<div className = 'headerLayer'>
 					<div className = 'header'>
-						<img src = { halfSun } width = '90%' />
+						<img src = { halfSun } width = '90%' alt = 'HalfSun' />
 						<h2 className = 'text-dark'>SummerTime Contacts</h2>
 						<h4 className = 'text-dark mx-n3'>The most revolutionary online contact manager</h4>
 					</div>
@@ -44,11 +44,11 @@ export default class Home extends Component {
 			<Container className = 'center'>
 				<h1 className = 'text-light pt-4'>Team</h1>
 				<Row xs = { 3 } sm = { 3 } md = { 6 }>
-					{ team.map(({ name, img, role, link }) => {
+					{ team.map(({ name, img, role, link }, idx) => {
 						return (
-							<Col className = 'pt-3'>
+							<Col key = { idx } className = 'pt-3'>
 								<Card className = 'bg-light center'>
-									<Image className = 'my-3' width = '80%' src = { img } rounded />
+									<Image className = 'my-3' width = '80%' alt = { name } src = { img } rounded />
 									<a className = 'text-center' href = { link }>{ name }</a>
 									<p className = 'text-dark text-center font-weight-bold'>{ role }</p>
 								</Card>
@@ -71,9 +71,9 @@ export default class Home extends Component {
 		return (
 			<Container>
 				<Row xs = { 2 } sm = { 2 } md = { 4 } className = 'py-4'>
-					{ reviews.map(({ quote, company }) => {
+					{ reviews.map(({ quote, company }, idx) => {
 						return (
-							<Col className = 'pt-3'>
+							<Col key = { idx } className = 'pt-3'>
 								<Card className = 'p-3'>
 									<h5>{ quote }</h5>
 									<h6 className = 'ml-auto'>- { company }</h6>

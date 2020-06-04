@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Col, Button } from '../pages';
 import { useHistory } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { BsSearch } from 'react-icons/bs';
 import './styles.css';
 
 const validateLogin = values => {
@@ -52,6 +51,7 @@ const validateContact = values => {
 		errors.phone = 'Phone or email required';
 	}
 
+	// eslint-disable-next-line no-useless-escape
 	if (values.email && !/^.+@[^\.].*\.[a-z]{2,}$/.test(values.email))
 		errors.email = 'Enter valid email address';
 
