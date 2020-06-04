@@ -8,8 +8,10 @@ import '../pages/styles.css';
 import sunset2 from './../data/Sunsetlogo2.png'; // added images
 import sunset from './../data/SunsetLogo.png';
 import { LoginForm, SignUpForm } from './';
-import { Modal, Container, Row, Col, Figure, Collapse, Alert } from '../pages';
+import { Modal, Container, Row, Col, Figure, Collapse } from '../pages';
 import { createUser, loginUser, logoutUser, getContacts } from '../config';
+import Toast from 'react-bootstrap/Toast';
+import ToastHeader from 'react-bootstrap/ToastHeader'
 
 const buttonLink = 'bg-transparent border-0 p-0 text-primary';
 
@@ -17,22 +19,32 @@ class NavBar extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { registerModal: false, loginModal: false, renderMessage: false, renderError: false };
+		this.state = { registerModal: false, loginModal: false, renderMessage: false, renderError: false, toast: false };
 	}
 
-	signup(values) {
+	async signup(values) {
 		const { username, password, firstName, lastName } = values;
 
-		this.thanks.className = 'visible';
-		this.props.createUser({ User: username, Password: md5(password),
-		                        FirstName: firstName, LastName: lastName });
-		setTimeout(() => this.setState({ registerModal: false }), 500);
+		this.setState({ renderError: false });
+		await this.props.createUser({ User: username, Password: md5(password), FirstName: firstName, LastName: lastName });
+
+		const { ErrorID } = this.props;
+
+		if (ErrorID !== 409) {
+			this.setState({ renderMessage: true });
+			setTimeout(() => this.setState({ registerModal: false }), 500);
+		}
+		else {
+			this.setState({ renderError: true });
+		}
+
+		return ErrorID;
 	}
 
 	async login(values) {
 		const { username, password } = values;
 
-		// this.signIn.className = 'visible';
+		this.setState({ renderError: false });
 		await this.props.loginUser({ 'User': username, 'Password': md5(password) });
 
 		const { UserID, ErrorID } = this.props;
@@ -49,7 +61,6 @@ class NavBar extends Component {
 		return ErrorID;
 	}
 
-	// changed from cactus to logo
 	renderRegisterModal() {
 		return (
 			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false }) }>
@@ -70,13 +81,20 @@ class NavBar extends Component {
 									</button>
 									{ ' ' }instead!
 								</p>
+								<Collapse in = { this.state.renderError }>
+									<div class = 'alert alert-danger'>
+										<div class = 'alert alert-danger'>Username already in use</div>
+									</div>
+								</Collapse>
 								<SignUpForm onSubmit = { (values) => this.signup(values) } />
 							</Col>
 							<Col className = 'center' lg = '5'>
 								<Figure.Image width = '83%' src = { sunset } alt = 'Sunset' />
-								<Figure.Caption ref = { ref => this.thanks = ref } className = 'invisible'>
-									Hello! Thank you for signing up.
-								</Figure.Caption>
+								<Collapse in = { this.renderMessage }>
+									<Figure.Caption className = 'text-dark'>
+										Hello! Thank you for signing up.
+									</Figure.Caption>
+								</Collapse>
 							</Col>
 						</Row>
 					</Container>
@@ -98,7 +116,7 @@ class NavBar extends Component {
 							<Col className = 'center divider' lg = '5'>
 								<Figure.Image width = '83%' src = { sunset } alt = 'Sunset' />
 								<Collapse in = { this.state.renderMessage }>
-									<Figure.Caption ref = { ref => this.signIn = ref }>
+									<Figure.Caption className = 'text-dark'>
 										Signing in...
 									</Figure.Caption>
 								</Collapse>
@@ -116,7 +134,7 @@ class NavBar extends Component {
 								</p>
 								<Collapse in = { this.state.renderError }>
 									<div class = 'alert alert-danger'>
-										<div class = 'alert alert-danger'>Incorrect username or password.</div>
+										<div class = 'alert alert-danger'>Incorrect username or password</div>
 									</div>
 								</Collapse>
 								<LoginForm onSubmit = { values => this.login(values) } />
@@ -139,7 +157,7 @@ class NavBar extends Component {
 			return (
 				<>
 					<Nav.Item key = 'greeting'>
-						<Navbar.Text className = 'text-primary px-2'>Hello, { FirstName }!</Navbar.Text>
+						<Navbar.Text className = 'text-secondary px-2'>Hello, { FirstName }!</Navbar.Text>
 					</Nav.Item>
 					<Nav.Item key = 'home'>
 						<NavLink exact to = '/' className = 'nav-link'>
@@ -153,7 +171,7 @@ class NavBar extends Component {
 					</Nav.Item>
 					<Nav.Item key = 'logout'>
 						<Link to = '/' className = 'nav-link'>
-							<button className = 'bg-transparent border-0 p-0 nav-link' onClick = { () => logoutUser() }>
+							<button className = 'bg-transparent border-0 p-0 nav-link' onClick = { () => { logoutUser(); this.setState({ toast: true }) } }>
 									Log out
 							</button>
 						</Link>
@@ -176,22 +194,28 @@ class NavBar extends Component {
 		);
 	}
 
-	// added logo next to "Small Project"
 	render() {
 		return (
-			<Navbar bg = 'dark' variant = 'dark' sticky = 'top'>
-				<Container expand = 'sm'>
-					<Navbar.Brand>
-						<Figure.Image width = '12%' src = { sunset2 } alt = 'Sunset' />
-						<Link to = '/' className = 'text-white'>Small Project</Link>
-					</Navbar.Brand>
-					<Nav className = 'ml-auto'>
-						{ this.renderLinks() }
-					</Nav>
-				</Container>
-				{ this.renderRegisterModal() }
-				{ this.renderLoginModal() }
-			</Navbar>
+			<>
+				<Navbar bg = 'info' variant = 'dark' sticky = 'top'>
+					<Container expand = 'sm'>
+						<Navbar.Brand>
+							<img width = '35px' src = { sunset2 } alt = 'Sunset' />{ ' ' }
+							<Link to = '/' className = 'text-light'>SummerTime Contacts</Link>
+						</Navbar.Brand>
+						<Nav className = 'ml-auto'>
+							{ this.renderLinks() }
+						</Nav>
+					</Container>
+					{ this.renderRegisterModal() }
+					{ this.renderLoginModal() }
+
+				</Navbar>
+				<Toast onClose = { () => this.setState({ toast: false }) } className = 'toast text-primary' show = { this.state.toast } delay = { 3500 } autohide>
+					<ToastHeader>Thank you for using SummerTime Contacts!</ToastHeader>
+					<Toast.Body className = 'text-primary'>Have a great day</Toast.Body>
+				</Toast>
+			</>
 		);
 	}
 }

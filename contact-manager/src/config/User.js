@@ -91,7 +91,7 @@ export const createUser = user => {
 		return fetch(CreateUser, fetchPOST(user))
 			.then(response => response.json())
 			.then(data => {
-				if (!data.errorID)
+				if (!data.ErrorID)
 					dispatch({ type: 'CREATE_USER_SUCCESS', data });
 				else
 					dispatch({ type: 'CREATE_USER_FAIL', data });

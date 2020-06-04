@@ -17,4 +17,4 @@ export { default as ButtonGroup } from 'react-bootstrap/ButtonGroup';
 export { default as ListGroup } from 'react-bootstrap/ListGroup';
 export { default as Navbar } from 'react-bootstrap/Navbar';
 export { default as Collapse } from 'react-bootstrap/Collapse';
-export { default as Alert } from 'react-bootstrap/Alert';
+export { default as Image } from 'react-bootstrap/Image';
