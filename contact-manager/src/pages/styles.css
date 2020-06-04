@@ -1,6 +1,6 @@
 .modal-content {
 	background: rgb(255,236,209);
-	background: linear-gradient(90deg, rgba(255,236,209,1) 10%, rgba(250,240,202,1) 53%, rgba(244,211,94,1) 100%); 
+	background: linear-gradient(rgba(255,236,209,1) 10%, rgba(250,240,202,1) 53%, rgba(244,211,94,1) 100%); 
 }
 
 .center {
@@ -67,7 +67,7 @@
 
 .imgContainer {
 	overflow: hidden;
-	max-height: 85vh;
+	max-height: 75vh;
 }
 
 .header {
@@ -94,4 +94,79 @@ h1, h2 {
 .nocontacts {
 	font-size: 24px;
 	font-weight: bold;
+}
+
+.reviewContainer{
+	width: 150%;
+}
+
+.teamContainer {
+	width: 160%;
+}
+
+.h3 {
+	font-size: 22px;
+}
+
+.bottomColor {
+	background: linear-gradient(#15616D 40%, #001524); 
+}
+
+.bottomSpace {
+	margin-bottom: 40px;
+}
+
+.topSpace {
+	margin-top: 20px;
+}
+
+.black {
+	color: #000000;
+	font-weight: bold;
+	font-size: 25px;
+}
+
+.white {
+	color: #ffffff;
+}
+
+.teamFont {
+	font-size: 18px;
+}
+
+.cardColor {
+	background-color: rgb(34, 150, 168);
+}
+
+.cardBorder {
+	border-width: 0px !important;
+}
+
+.textLocation {
+	text-align: right;
+}
+
+.cardSize {
+	width: 14.66%;
+	background-color: #FAF0CA !important;
+	margin: 1%;
+	border-radius: 5% !important;
+}
+
+.line {
+	height: 5px;
+	width: 90%;
+	margin-top: 2%;
+	margin-bottom: 3%;
+	border-width: 0px !important;
+	background-color: #00000000 !important;
+}
+
+.cardPad {
+	padding: 6%;
+	margin-top: 10%;
+}
+
+.nameSize {
+	font-size: 28px;
 }
