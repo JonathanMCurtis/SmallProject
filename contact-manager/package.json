@@ -10,6 +10,7 @@
     "create-react-class": "^15.6.3",
     "formik": "^2.1.4",
     "md5": "^2.2.1",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
