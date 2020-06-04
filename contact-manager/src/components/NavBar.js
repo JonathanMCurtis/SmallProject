@@ -132,8 +132,8 @@ class NavBar extends Component {
 									{ ' ' }instead!
 								</p>
 								<Collapse in = { this.state.renderError }>
-									<div class = 'alert alert-danger'>
-										<div class = 'alert alert-danger'>Incorrect username or password</div>
+									<div className = 'alert alert-danger'>
+										<div className = 'alert alert-danger'>Incorrect username or password</div>
 									</div>
 								</Collapse>
 								<LoginForm onSubmit = { values => this.login(values) } />
@@ -210,9 +210,9 @@ class NavBar extends Component {
 					{ this.renderLoginModal() }
 
 				</Navbar>
-				<Toast onClose = { () => this.setState({ toast: false }) } className = 'toast text-primary' show = { this.state.toast } delay = { 3500 } autohide>
-					<ToastHeader>Thank you for using SummerTime Contacts!</ToastHeader>
-					<Toast.Body className = 'text-primary'>Have a great day</Toast.Body>
+				<Toast onClose = { () => this.setState({ toast: false }) } className = 'toast' show = { this.state.toast } delay = { 3500 } autohide>
+					<ToastHeader className = 'text-primary font-weight-bold'>Thank you for using SummerTime Contacts</ToastHeader>
+					<Toast.Body>Have a great day!</Toast.Body>
 				</Toast>
 			</>
 		);
