@@ -63,7 +63,7 @@ class NavBar extends Component {
 
 	renderRegisterModal() {
 		return (
-			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false }) }>
+			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false, renderError: false }) }>
 				<Modal.Header closeButton>
 					<Modal.Title>Welcome!</Modal.Title>
 				</Modal.Header>
@@ -75,7 +75,7 @@ class NavBar extends Component {
 									<button
 										className = { buttonLink }
 										onClick = { () => this.setState({ registerModal: false },
-											() => this.setState({ loginModal: true })) }
+											() => this.setState({ loginModal: true, renderError: false })) }
 									>
 										Sign in
 									</button>
@@ -103,10 +103,9 @@ class NavBar extends Component {
 		);
 	}
 
-	// changed from cactus to logo
 	renderLoginModal() {
 		return (
-			<Modal centered size = 'lg' show = { this.state.loginModal } onHide = { () => this.setState({ loginModal: false }) }>
+			<Modal centered size = 'lg' show = { this.state.loginModal } onHide = { () => this.setState({ loginModal: false, renderError: false }) }>
 				<Modal.Header closeButton>
 					<Modal.Title>Welcome back!</Modal.Title>
 				</Modal.Header>
@@ -126,7 +125,7 @@ class NavBar extends Component {
 									<button
 										className = { buttonLink }
 										onClick = { () => this.setState({ loginModal: false },
-											() => this.setState({ registerModal: true })) }
+											() => this.setState({ registerModal: true, renderError: false })) }
 									>
 										Sign up
 									</button>
