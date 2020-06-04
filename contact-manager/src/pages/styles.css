@@ -1,6 +1,6 @@
-.color {
-	background-image: linear-gradient(to right, red, yellow);
-	border-radius: 4px
+.modal-content {
+	background: rgb(255,236,209);
+	background: linear-gradient(rgba(255,236,209,1) 10%, rgba(250,240,202,1) 53%, rgba(244,211,94,1) 100%); 
 }
 
 .center {
@@ -10,14 +10,109 @@
 	align-items: center;
 }
 
-@media (min-width:992px) {
-	.divider {
-			border-right: 1px solid #dee2e6 !important;
-	}
+.slider {
+	text-align: center;
+	height: 75vh;
 }
 
 .smallText {
 	text-align: center;
 	line-height: 1rem;
 	font-size: 0.75rem;
+}
+
+@media only screen and (max-width: 568px) {
+	.invisible {
+		display: none;
+	}
+}
+
+@media (min-width: 992px) {
+	.divider {
+			border-right: 1px solid #dee2e6 !important;
+	}
+}
+
+.w-10 {
+	width: 10% !important;
+}
+
+.w-90 {
+	width: 90% !important;
+}
+
+.scroll {
+	max-height: 79vh;
+	overflow-y: scroll;
+	scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.toast {
+	bottom: 0;
+	right: 0;
+	position: absolute;
+	z-index: 1;
+}
+
+.headingContainer {
+	position: relative;
+	text-align: center;
+	background-color: white;
+	overflow: hidden;
+}
+
+.imgContainer {
+	overflow: hidden;
+	max-height: 75vh;
+}
+
+.header {
+	position: absolute;
+	bottom: 50%;
+	left: 50%;
+	transform: translate(-50%, 50%);
+}
+
+.properHeight {
+	height: calc(100vh - 119.5px);
+}
+
+@media only screen and (max-width: 768px) {
+	.properHeight {
+		height: auto
+	}
+	.scroll {
+		max-height: 40vh;
+		overflow-y: scroll;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+	.navbar-expand > .container {
+		flex-wrap: wrap !important;
+	}
+	.w-10 {
+		width: auto !important;
+	}
+	.largeSearch {
+		flex: 0 0 80%;
+		max-width: 80%;
+	}
+}
+
+.headerLayer {
+	background-color: rgba(255, 255, 255, 0.4);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.bottomColor {
+	background: linear-gradient(#15616D 40%, #001524); 
 }

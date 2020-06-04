@@ -1,183 +1,103 @@
 import React, { Component } from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Modal from 'react-bootstrap/Modal';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-import Carousel from 'react-bootstrap/Carousel';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import cactus from './../data/cactus.png';
-import Figure from 'react-bootstrap/Figure';
-import md5 from 'md5';
+import Card from 'react-bootstrap/Card';
+import halfSun from '../data/HalfLogo.png';
+import background from '../data/beach-landing.jpg';
+import curtis from '../data/curtis.jpg';
+import liderma from '../data/liderma.jpg';
+import alex from '../data/alex.jpg';
+import mason from '../data/nimu.png';
+import dakota from '../data/dakota.jpg';
+import idel from '../data/idel.jpg';
+
 import './styles.css';
+import { Container, Col, Row, Image } from './';
 
-const buttonLink = 'bg-transparent border-0 p-0 text-primary';
-
-export class Home extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = { registerModal: false, loginModal: false };
-	}
-
-	componentDidMount() {
-		// fetch('http://dummy.restapiexample.com/api/v1/employees')
-		// 	.then(data => data.json())
-		// 	.then(json => alert(JSON.stringify(json.data)))
-	}
-
-	renderRegisterForm() {
+export default class Home extends Component {
+	renderHeading() {
 		return (
-			<div>
-				<Form>
-					<Form.Group>
-						<Form.Label>Name</Form.Label>
-						<Row>
-							<Col sm = '5'>
-								<Form.Control type = 'text' placeholder = 'First name' ref = { name => (this.fName = name) } />
-							</Col>
-							<Col>
-								<Form.Control type = 'text' placeholder = 'Last name' ref = { name => (this.lName = name) } />
-							</Col>
-						</Row>
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Email</Form.Label>
-						<Form.Control type = 'email' placeholder = 'example@domain.com' ref = { mail => (this.email = mail) } />
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Password</Form.Label>
-						<Form.Control type = 'password' placeholder = 'Password' ref = { pass => (this.password = pass) } />
-					</Form.Group>
-				</Form>
-				<Button onClick = { () => document.getElementById('thanks').className = 'visible' }>Submit</Button>
+			<div className = 'headingContainer'>
+				<div className = 'imgContainer'>
+					<img src = { background } width = '100%' alt = 'SummerTime Contacts' />
+				</div>
+				<div className = 'headerLayer'>
+					<div className = 'header'>
+						<img src = { halfSun } width = '90%' alt = 'HalfSun' />
+						<h2 className = 'text-dark'>SummerTime Contacts</h2>
+						<h4 className = 'text-dark mx-n3'>The most revolutionary online contact manager</h4>
+					</div>
+				</div>
 			</div>
 		);
 	}
 
-	renderLoginForm() {
+	renderTeam() {
+		const team = [
+			{ name: 'John Curtis', img: curtis, role: 'Project Manager', link: 'https://github.com/JonathanMCurtis' },
+			{ name: 'Liderma Guerry', img: liderma, role: 'Database', link: 'https://github.com/liderma' },
+			{ name: 'Alex Varga', img: alex, role: 'API', link: 'https://github.com/VargaAlex' },
+			{ name: 'Dakota', img: dakota, role: 'API', link: 'https://github.com/tuckerf42' },
+			{ name: 'Mason', img: mason, role: 'Front-end', link: 'https://github.com/MasonBenell' },
+			{ name: 'Idel Martinez', img: idel, role: 'Front-end', link: 'https://github.com/idelmr' }
+		];
+
 		return (
-			<div>
-				<Form>
-					<Form.Group>
-						<Form.Label>Email</Form.Label>
-						<Form.Control type = 'email' placeholder = 'example@domain.com' ref = { mail => (this.email = mail) } />
-					</Form.Group>
-					<Form.Group>
-						<Form.Label>Password</Form.Label>
-						<Form.Control type = 'password' placeholder = 'Password' ref = { pass => (this.password = pass) } />
-					</Form.Group>
-				</Form>
-				<Button onClick = { () => document.getElementById('sign-in').className = 'visible' }>Log in</Button>
-			</div>
+			<Container className = 'center'>
+				<h1 className = 'text-light pt-4'>Team</h1>
+				<Row xs = { 3 } sm = { 3 } md = { 6 }>
+					{ team.map(({ name, img, role, link }, idx) => {
+						return (
+							<Col key = { idx } className = 'pt-3'>
+								<Card className = 'bg-light center'>
+									<Image className = 'my-3' width = '80%' alt = { name } src = { img } rounded />
+									<a className = 'text-center' href = { link }>{ name }</a>
+									<p className = 'text-dark text-center font-weight-bold'>{ role }</p>
+								</Card>
+							</Col>
+						);
+					}) }
+				</Row>
+			</Container>
 		);
 	}
 
-	renderRegisterModal() {
+	renderReviews() {
+		const reviews = [
+			{ quote: '"Best website of the decade"', company: 'Frobres' },
+			{ quote: '"Surprisingly innovative design"', company: 'TMCZ' },
+			{ quote: '"#1 website for managing contacts"', company: 'Angrye\'s List' },
+			{ quote: '"Average Review:\n5 / 5 stars"', company: 'Chelp' }
+		];
+
 		return (
-			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false }) }>
-				<Modal.Header closeButton>
-					<Modal.Title>Welcome!</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Container>
-						<Row>
-							<Col className = 'divider'>
-								<p className = 'smallText'>Already have an account?<br />
-									<button className = { buttonLink } onClick = { () => this.setState({ loginModal: true, registerModal: false })}>
-										Sign in
-									</button>
-									{' '}instead!
-								</p>
-								{ this.renderRegisterForm() }
+			<Container>
+				<Row xs = { 2 } sm = { 2 } md = { 4 } className = 'py-4'>
+					{ reviews.map(({ quote, company }, idx) => {
+						return (
+							<Col key = { idx } className = 'pt-3'>
+								<Card className = 'p-3'>
+									<h5>{ quote }</h5>
+									<h6 className = 'ml-auto'>- { company }</h6>
+								</Card>
 							</Col>
-							<Col className = 'center' lg = '5'>
-								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption id = 'thanks' className = 'invisible'>Hello! Thank you for signing up.</Figure.Caption>
-							</Col>
-						</Row>
-					</Container>
-				</Modal.Body>
-			</Modal>
-		);
-	}
-
-	renderLoginModal() {
-		return (
-			<Modal centered size = 'lg' show = { this.state.loginModal } onHide = { () => this.setState({ loginModal: false }) }>
-				<Modal.Header closeButton>
-					<Modal.Title>Welcome back!</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Container>
-						<Row>
-							<Col className = 'center divider' lg = '5'>
-								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption id = 'sign-in' className = 'invisible'>Signing in...</Figure.Caption>
-							</Col>
-							<Col>
-								<p className = 'smallText'>Don't have an account?<br />
-									<button className = { buttonLink } onClick = { () => this.setState({ registerModal: true, loginModal: false })}>
-										Sign up
-									</button>
-									{' '}instead!
-								</p>
-								{ this.renderLoginForm() }
-							</Col>
-						</Row>
-					</Container>
-				</Modal.Body>
-			</Modal>
-		);
-	}
-
-	renderSlider() {
-
-	}
-
-	renderNavigation() {
-		return (
-			<Navbar bg = 'dark' variant = 'dark' sticky = 'top'>
-				<Container expand = 'sm'>
-					<Navbar.Brand>Small Project</Navbar.Brand>
-					<Nav className = 'ml-auto'>
-						<Nav.Item>
-							<Nav.Link
-								eventKey = 'register'
-								onSelect = { () => this.setState({ registerModal: true }) }
-							>
-						Register
-							</Nav.Link>
-						</Nav.Item>
-						<Nav.Item>
-							<Nav.Link
-								eventKey = 'login'
-								onSelect = { () => this.setState({ loginModal: true }) }
-							>
-									Login
-							</Nav.Link>
-						</Nav.Item>
-					</Nav>
-				</Container>
-			</Navbar>
+						);
+					}) }
+				</Row>
+				<Row className = 'center'>
+					<p className = 'text-white text-center'>Copyright © 2020 contacts21.us. All Rights Reserved. SummerTime Contacts by Team 21</p>
+				</Row>
+			</Container>
 		);
 	}
 
 	render() {
-		let newUser = {
-			name: '',
-			email: '',
-			password: ''
-		}
-	
 		return (
-			<div>
-				{ this.renderNavigation() }
-				{ this.renderRegisterModal() }
-				{ this.renderLoginModal() }
-			</div>
+			<>
+				{ this.renderHeading() }
+				<div className = 'bottomColor'>
+					{ this.renderTeam() }
+					{ this.renderReviews() }
+				</div>
+			</>
 		);
 	}
 }

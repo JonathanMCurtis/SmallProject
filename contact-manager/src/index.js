@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import reducer from './config/User';
+import './custom.scss';
+
+const store = initialState => createStore(reducer, initialState, applyMiddleware(thunk));
 
 ReactDOM.render(
-	<React.StrictMode>
+	<Provider store = { store() }>
 		<App />
-	</React.StrictMode>,
+	</Provider>,
 	document.getElementById('root')
 );

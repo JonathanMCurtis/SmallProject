@@ -1,86 +1,61 @@
-<?php
-// Gets the information provided when the php file was called
-$inData = getRequestInfo();
+<?php require './Functions.php';
+    // Gets the information provided in the API call
+    $received = file_get_contents('php://input');
 
-// Creates new variables to store the data in
-$id = 0;
-$firstName = "";
-$lastName = "";
+    // Creates user in the database
+    $requiredProps = ["User","Password","FirstName","LastName"];
+    $inputData = getRequestInfo($received);
+    if(ensureProps($inputData, $requiredProps))
+    {
+        // Declare variables to hold all required JSON input
+        $UserID = 0;
+        $User = $inputData["User"];
+        $Password = $inputData["Password"];
+        $FirstName = $inputData["FirstName"];
+        $LastName = $inputData["LastName"];
 
-// Opens a sql connection using the username and password for the project,
-// to a database named
-$conn = new mysqli("localhost", "smallProject", "thisIsInsecure", "SmallProjectDB"); //localhost, db username, db password, db name
+        if (strlen($inputData["User"]) < 1)
+            returnWithError(409, "Invalid username");
 
-// If the connection status returns an error, return with a connection error
-if ($conn->connect_error)
-{
-	returnWithError( $conn->connect_error );
-}
-else
-{
-	// Otherwise, create a SQL statement to get the ID, firstName and lastName from the Users table, where the login and password match the provided info
-	$sql = "SELECT ID,FirstName,LastName FROM Users where User='" . $inData["User"] . "'";
-	// Execute this query, and store the results in a new variable called 'result'
-	$result = $conn->query($sql);
-	// If there is at least one row returned
-	if ($result->num_rows > 0)
-	{
-		// Return error because this input from the user is already associated
-		// with another account
-		$error = '{"id":0,"FirstName":"","LastName":"","error":"This account already Exists"}';
-		returnWithErrorForUser($error);
-	}
-	else
-	{
-		// Otherwise, no record matching that exists (either user doesn't exist, or invalid password)
-		// and just add it into the database
+        // Opens an SQL connection to the database using the stored credentials
+        $ini = parse_ini_file("../../php/temp.ini");
+        $conn = new mysqli("localhost", $ini["username"], $ini["password"], $ini["db_name"]);
 
-		$newUser = "INSERT INTO Users(FirstName, LastName, User, Password) VALUES ('" . $inData["FirstName"] . "', '" . $inData["LastName"] . "', '". $inData["User"] . "', '" . $inData["Password"] . "')";
-		$conn->query($newUser);
-		
-		$newAccount = "SELECT ID, FirstName, LastName FROM Users WHERE User='" . $inData["User"] . "'";
-		$result = $conn->query($newAccount);
+        // If the connection status returns an error, return with a connection error
+        if ($conn->connect_error) {
+            returnWithError(503, $conn->connect_error, "", $inputData);
+        } else {
+            // Otherwise, check if the provided Username is already in use.
+            $sql = "SELECT UserID FROM Users where User='" . $User . "'";
+            // Execute this query, and store the results in a new variable called 'result'
+            $result = $conn->query($sql);
+            // If there is at least one row returned
+            if (!mysqli_num_rows($result)==0) {
+                // Then this account already exists, return an error stating such.
+                returnWithError(409, "An account already exists with the given username.");
+            } else {
+                // Otherwise, this UserID is available
+                $newUser = "INSERT INTO Users(FirstName, LastName, User, Password) VALUES ('" . $FirstName . "', '" . $LastName . "', '" . $User . "', '" . $Password . "')";
+                $conn->query($newUser);
 
-		if ($result->num_rows > 0)
-		{
-			$row = $result->fetch_assoc();
-			$firstName = $row["FirstName"];
-			$lastName = $row["LastName"];
-			$id = $row["ID"];
-			returnWithInfo($firstName, $lastName, $id);
-		}
-	}
-	// Close the connection
-	$conn->close();
-}
+                // Since the User field is unique, we can get the ID querying for an equivalent user.
+                $newAccountID = "SELECT UserID, FirstName, LastName FROM Users WHERE User='" . $User . "'";
+                $result = $conn->query($newAccountID);
 
-function returnWithErrorForUser($error)
-{
-	$retValue = $error;
-	sendResultInfoAsJson($retValue);
-}
-
-function returnWithError($error)
-{
-	$retValue = '{"id":"","FirstName":"","LastName":"","error":"' . $error . '"}';
-	sendResultInfoAsJson($retValue);
-}
-
-function sendResultInfoAsJson($obj)
-{
-	header('Content-type: application/json');
-	echo $obj;
-	return $obj;
-}
-
-function returnWithInfo($firstName, $lastName, $id)
-{
-	$retValue = '{"id": "' . $id . '","firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
-	sendResultInfoAsJson($retValue);
-}
-
-function getRequestInfo()
-{
-	return json_decode(file_get_contents('php://input'), true);
-}
-?>
+                // Get the associated result
+                $row = $result->fetch_assoc();
+                // Declare an associative array for our JSON output
+                $output = array();
+                // Populate the JSON output array with the result data
+                $output["ErrorID"] = 0;
+                $output["Error"] = "";
+                $output["UserID"] = $row["UserID"];
+                $output["FirstName"] = $row["FirstName"];
+                $output["LastName"] = $row["LastName"];
+                // Send result to be JSON encoded and returned.
+                returnWithInfo($output);
+            }
+            // Close the connection
+            $conn->close();
+        }
+    }
