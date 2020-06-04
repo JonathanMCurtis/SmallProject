@@ -1,3 +1,8 @@
+.modal-content {
+	background: rgb(255,236,209);
+	background: linear-gradient(90deg, rgba(255,236,209,1) 10%, rgba(250,240,202,1) 53%, rgba(244,211,94,1) 100%); 
+}
+
 .center {
 	display: flex;
 	flex-direction: column;
@@ -32,6 +37,10 @@
 	width: 10% !important;
 }
 
+.w-90 {
+	width: 90% !important;
+}
+
 .scroll {
 	height: 82.5vh;
 	overflow-y: scroll;
@@ -43,8 +52,46 @@
   display: none;
 }
 
+.toast {
+	bottom: 0;
+	right: 0;
+	position: absolute;
+}
+
+.headingContainer {
+	position: relative;
+	text-align: center;
+	background-color: white;
+	overflow: hidden;
+}
+
+.imgContainer {
+	overflow: hidden;
+	max-height: 85vh;
+}
+
+.header {
+	position: absolute;
+	bottom: 50%;
+	left: 50%;
+	transform: translate(-50%, 50%);
+}
+
+.headerLayer {
+	background-color: rgba(255, 255, 255, 0.4);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+h1, h2 {
+	font-size: 10px;
+}
+
 /* used for "no contacts added" and "no contact selected" text for now */
-.nocontacts{
+.nocontacts {
 	font-size: 24px;
 	font-weight: bold;
 }
