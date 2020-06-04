@@ -131,26 +131,26 @@ class ContactManager extends Component {
 		return (
 			<Navbar bg = 'third'>
 				<Container>
-					<Col sm = '3' className = 'justify-content-between'>
+					<Col sm = '3' className = 'largeSearch'>
 						<SearchForm onSubmit = { ({ search }) => searchQuery(search) } />
 					</Col>
 					<Col>
 						<Nav className = 'w-10 float-right justify-content-between'>
 							<BsPlus
 								as = 'button'
-								size = '20px'
+								size = '24px'
 								onClick = { () => this.setState({ noneSelected: true, editing: true, contact: {} }) }
 							/>
 							{ !this.state.noneSelected
 							&& <>
 								<BsPencil
 									as = 'button'
-									size = '20px'
+									size = '24px'
 									onClick = { () => this.setState({ editing: true }) }
 								/>
 								<BsTrash
 									as = 'button'
-									size = '20px'
+									size = '24px'
 									onClick = { () => this.setState({ deleteContact: true }) }
 								/>
 							</> }
@@ -226,7 +226,7 @@ class ContactManager extends Component {
 								{ this.noSearch() }
 							</ListGroup>
 						</Col>
-						<Col className = 'scroll'>
+						<Col className = 'py-3'>
 							{ this.renderContactInfo() }
 						</Col>
 					</Row>
