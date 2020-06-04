@@ -1,0 +1,29 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+$dark-blue: #001524;
+$navy-blue: #0D3B66;
+$light-blue: #15616D;
+$white: #FFECD1;
+$cream: #FAF0CA;
+$yellow: #F4D35E;
+$light-orange: #EE964B;
+$orange: #FF7D00;
+$red-orange: #F95738;
+$red-brown: #78290F;
+
+
+$theme-colors: (
+	primary: $red-orange,
+	secondary: $orange,
+	third: $light-orange,
+	success: $navy-blue,
+	danger: $orange,
+	warning: $yellow,
+	info: $light-blue,
+	light: $cream,
+  dark: $dark-blue
+);
+
+@import "../node_modules/bootstrap";

@@ -10,7 +10,7 @@ export const Router = () => {
 			<Switch>
 				<Route exact path = '/' component = { Home } />
 				<Route exact path = '/contacts' component = { ContactManager } />
-				<Route component = { NotFound } />
+				<Route path = { ['/*', '/contacts/*'] } component = { NotFound } />
 			</Switch>
 		</BrowserRouter>
 	);

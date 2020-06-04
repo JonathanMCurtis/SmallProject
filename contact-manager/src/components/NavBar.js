@@ -5,10 +5,13 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import md5 from 'md5';
 import '../pages/styles.css';
-import cactus from '../data/cactus.png';
+import sunset2 from './../data/Sunsetlogo2.png';
+import sunset from './../data/SunsetLogo.png';
 import { LoginForm, SignUpForm } from './';
-import { Modal, Container, Row, Col, Figure } from '../pages';
-import { createUser, loginUser, logoutUser } from '../config';
+import { Modal, Container, Row, Col, Figure, Collapse } from '../pages';
+import { createUser, loginUser, logoutUser, getContacts } from '../config';
+import Toast from 'react-bootstrap/Toast';
+import ToastHeader from 'react-bootstrap/ToastHeader'
 
 const buttonLink = 'bg-transparent border-0 p-0 text-primary';
 
@@ -16,29 +19,51 @@ class NavBar extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { registerModal: false, loginModal: false };
+		this.state = { registerModal: false, loginModal: false, renderMessage: false, renderError: false, toast: false };
 	}
 
-	signup(values) {
+	async signup(values) {
 		const { username, password, firstName, lastName } = values;
 
-		this.thanks.className = 'visible';
-		this.props.createUser({ User: username, Password: md5(password),
-		                        FirstName: firstName, LastName: lastName });
-		setTimeout(() => this.setState({ registerModal: false }), 500);
+		this.setState({ renderError: false });
+		await this.props.createUser({ User: username, Password: md5(password), FirstName: firstName, LastName: lastName });
+
+		const { ErrorID } = this.props;
+
+		if (ErrorID !== 409) {
+			this.setState({ renderMessage: true });
+			setTimeout(() => this.setState({ registerModal: false }), 500);
+		}
+		else {
+			this.setState({ renderError: true });
+		}
+
+		return ErrorID;
 	}
 
-	login(values) {
+	async login(values) {
 		const { username, password } = values;
 
-		this.signIn.className = 'visible';
-		this.props.loginUser({ 'User': username, 'Password': md5(password) });
-		setTimeout(() => this.setState({ loginModal: false }), 500);
+		this.setState({ renderError: false });
+		await this.props.loginUser({ 'User': username, 'Password': md5(password) });
+
+		const { UserID, ErrorID } = this.props;
+
+		if (ErrorID !== 401) {
+			this.setState({ renderMessage: true });
+			await this.props.getContacts({ UserID });
+			setTimeout(() => this.setState({ loginModal: false }), 500);
+		}
+		else {
+			this.setState({ renderError: true });
+		}
+
+		return ErrorID;
 	}
 
 	renderRegisterModal() {
 		return (
-			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false }) }>
+			<Modal centered size = 'lg' show = { this.state.registerModal } onHide = { () => this.setState({ registerModal: false, renderError: false }) }>
 				<Modal.Header closeButton>
 					<Modal.Title>Welcome!</Modal.Title>
 				</Modal.Header>
@@ -50,19 +75,26 @@ class NavBar extends Component {
 									<button
 										className = { buttonLink }
 										onClick = { () => this.setState({ registerModal: false },
-											() => this.setState({ loginModal: true })) }
+											() => this.setState({ loginModal: true, renderError: false })) }
 									>
 										Sign in
 									</button>
 									{ ' ' }instead!
 								</p>
+								<Collapse in = { this.state.renderError }>
+									<div class = 'alert alert-danger'>
+										<div class = 'alert alert-danger'>Username already in use</div>
+									</div>
+								</Collapse>
 								<SignUpForm onSubmit = { (values) => this.signup(values) } />
 							</Col>
 							<Col className = 'center' lg = '5'>
-								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption ref = { ref => this.thanks = ref } className = 'invisible'>
-									Hello! Thank you for signing up.
-								</Figure.Caption>
+								<Figure.Image width = '83%' src = { sunset } alt = 'Sunset' />
+								<Collapse in = { this.renderMessage }>
+									<Figure.Caption className = 'text-dark'>
+										Hello! Thank you for signing up.
+									</Figure.Caption>
+								</Collapse>
 							</Col>
 						</Row>
 					</Container>
@@ -73,7 +105,7 @@ class NavBar extends Component {
 
 	renderLoginModal() {
 		return (
-			<Modal centered size = 'lg' show = { this.state.loginModal } onHide = { () => this.setState({ loginModal: false }) }>
+			<Modal centered size = 'lg' show = { this.state.loginModal } onHide = { () => this.setState({ loginModal: false, renderError: false }) }>
 				<Modal.Header closeButton>
 					<Modal.Title>Welcome back!</Modal.Title>
 				</Modal.Header>
@@ -81,22 +113,29 @@ class NavBar extends Component {
 					<Container>
 						<Row>
 							<Col className = 'center divider' lg = '5'>
-								<Figure.Image width = '55%' src = { cactus } alt = 'Cactus' />
-								<Figure.Caption ref = { ref => this.signIn = ref } className = 'invisible'>
-									Signing in...
-								</Figure.Caption>
+								<Figure.Image width = '83%' src = { sunset } alt = 'Sunset' />
+								<Collapse in = { this.state.renderMessage }>
+									<Figure.Caption className = 'text-dark'>
+										Signing in...
+									</Figure.Caption>
+								</Collapse>
 							</Col>
 							<Col>
 								<p className = 'smallText'>Don't have an account?<br />
 									<button
 										className = { buttonLink }
 										onClick = { () => this.setState({ loginModal: false },
-											() => this.setState({ registerModal: true })) }
+											() => this.setState({ registerModal: true, renderError: false })) }
 									>
 										Sign up
 									</button>
 									{ ' ' }instead!
 								</p>
+								<Collapse in = { this.state.renderError }>
+									<div className = 'alert alert-danger'>
+										<div className = 'alert alert-danger'>Incorrect username or password</div>
+									</div>
+								</Collapse>
 								<LoginForm onSubmit = { values => this.login(values) } />
 							</Col>
 						</Row>
@@ -117,10 +156,10 @@ class NavBar extends Component {
 			return (
 				<>
 					<Nav.Item key = 'greeting'>
-						<Navbar.Text className = 'text-primary px-2'>Hello, { FirstName }!</Navbar.Text>
+						<Navbar.Text className = 'text-secondary px-2'>Hello, { FirstName }!</Navbar.Text>
 					</Nav.Item>
 					<Nav.Item key = 'home'>
-						<NavLink to = '/' className = 'nav-link'>
+						<NavLink exact to = '/' className = 'nav-link'>
 							Home
 						</NavLink>
 					</Nav.Item>
@@ -131,7 +170,7 @@ class NavBar extends Component {
 					</Nav.Item>
 					<Nav.Item key = 'logout'>
 						<Link to = '/' className = 'nav-link'>
-							<button className = 'bg-transparent border-0 p-0 nav-link' onClick = { () => logoutUser() }>
+							<button className = 'bg-transparent border-0 p-0 nav-link' onClick = { () => { logoutUser(); this.setState({ toast: true }) } }>
 									Log out
 							</button>
 						</Link>
@@ -156,27 +195,35 @@ class NavBar extends Component {
 
 	render() {
 		return (
-			<Navbar bg = 'dark' variant = 'dark' sticky = 'top'>
-				<Container expand = 'sm'>
-					<Navbar.Brand>
-						<Link to = '/' className = 'text-white'>Small Project</Link>
-					</Navbar.Brand>
-					<Nav className = 'ml-auto'>
-						{ this.renderLinks() }
-					</Nav>
-				</Container>
-				{ this.renderRegisterModal() }
-				{ this.renderLoginModal() }
-			</Navbar>
+			<>
+				<Navbar bg = 'info' variant = 'dark' sticky = 'top'>
+					<Container expand = 'sm'>
+						<Navbar.Brand>
+							<img width = '35px' src = { sunset2 } alt = 'Sunset' />{ ' ' }
+							<Link to = '/' className = 'text-light'>SummerTime Contacts</Link>
+						</Navbar.Brand>
+						<Nav className = 'ml-auto'>
+							{ this.renderLinks() }
+						</Nav>
+					</Container>
+					{ this.renderRegisterModal() }
+					{ this.renderLoginModal() }
+
+				</Navbar>
+				<Toast onClose = { () => this.setState({ toast: false }) } className = 'toast' show = { this.state.toast } delay = { 3500 } autohide>
+					<ToastHeader className = 'text-primary font-weight-bold'>Thank you for using SummerTime Contacts</ToastHeader>
+					<Toast.Body>Have a great day!</Toast.Body>
+				</Toast>
+			</>
 		);
 	}
 }
 
-const mapDispatchToProps = { createUser, loginUser, logoutUser };
+const mapDispatchToProps = { createUser, loginUser, logoutUser, getContacts };
 const mapStateToProps = ({ loggedIn, currentUser }) => {
-	const { FirstName, ErrorID } = currentUser;
+	const { FirstName, ErrorID, UserID, Contacts } = currentUser;
 
-	return { loggedIn, FirstName, ErrorID };
+	return { loggedIn, FirstName, ErrorID, UserID, Contacts };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

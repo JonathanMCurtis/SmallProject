@@ -32,7 +32,6 @@ const initialState = {
 		Error: '',
 		ErrorID: ''
 	},
-	contact: {},
 	search: {},
 	loggedIn: false
 };
@@ -51,12 +50,13 @@ export default (state = initialState, action) => {
 		case ACTIONS.LOG_OUT_USER:
 			return { ...initialState };
 		case ACTIONS.CREATE_CONTACT:
-		case ACTIONS.GET_CONTACTS_FAIL:
 		case ACTIONS.UPDATE_CONTACT:
 		case ACTIONS.DELETE_CONTACT:
-			return { ...state, currentUser: { ...currentUser, ...data } };
+			return { ...state, search: undefined, currentUser: { ...currentUser, ...data } };
 		case ACTIONS.GET_CONTACTS_SUCCESS:
 			return { ...state, currentUser: { ...currentUser, Contacts: data } };
+		case ACTIONS.GET_CONTACTS_FAIL:
+			return { ...state, currentUser: { ...currentUser, ...data, Contacts: {} } };
 		case ACTIONS.SEARCH_CONTACT:
 			return { ...state, search: data };
 		default:
@@ -92,7 +92,7 @@ export const createUser = user => {
 		return fetch(CreateUser, fetchPOST(user))
 			.then(response => response.json())
 			.then(data => {
-				if (!data.errorID)
+				if (!data.ErrorID)
 					dispatch({ type: 'CREATE_USER_SUCCESS', data });
 				else
 					dispatch({ type: 'CREATE_USER_FAIL', data });
@@ -150,11 +150,7 @@ export const createContact = contact => {
 	return dispatch => {
 		return fetch(CreateContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				dispatch({ type: 'CREATE_CONTACT', data });
-				if (!data.ErrorID)
-					getContacts({ UserID: contact.userID });
-			});
+			.then(data => dispatch({ type: 'CREATE_CONTACT', data }));
 	};
 };
 
@@ -198,11 +194,7 @@ export const updateContact = contact => {
 	return dispatch => {
 		return fetch(UpdateContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				dispatch({ type: 'UPDATE_CONTACT', data });
-				if (!data.ErrorID)
-					getContacts({ UserID: contact.UserID });
-			});
+			.then(data => dispatch({ type: 'UPDATE_CONTACT', data }));
 	};
 };
 
@@ -220,11 +212,7 @@ export const deleteContact = contact => {
 	return dispatch => {
 		return fetch(DeleteContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				dispatch({ type: 'DELETE_CONTACT', data });
-				if (!data.ErrorID)
-					getContacts({ UserID: contact.UserID });
-			});
+			.then(data => dispatch({ type: 'DELETE_CONTACT', data }));
 	};
 };
 
@@ -242,10 +230,6 @@ export const searchContact = contact => {
 	return dispatch => {
 		return fetch(SearchContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => {
-				if (data.ErrorID)
-					data = {};
-				dispatch({ type: 'SEARCH_CONTACT', data });
-			});
+			.then(data => dispatch({ type: 'SEARCH_CONTACT', data }));
 	};
 };
