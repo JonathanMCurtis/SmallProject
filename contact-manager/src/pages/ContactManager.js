@@ -1,11 +1,11 @@
-/* eslint-disable max-len */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { BsPencil, BsTrash, BsPlus, BsJustify } from 'react-icons/bs'; // added BsJustify
-import { Navbar, Container, Nav, ButtonGroup, Button, Modal, Row, Col, ListGroup, Figure } from './'; // added Figure
+import halfSun from '../data/HalfLogo.png';
+import { BsPencil, BsTrash, BsPlus } from 'react-icons/bs';
+import { Navbar, Container, Nav, ButtonGroup, Button, Modal, Row, Col, ListGroup, Figure } from './';
 import { createContact, deleteContact, getContacts, updateContact, searchContact } from '../config';
 import { ContactForm, SearchForm } from '../components';
-import sunset from './../data/SunsetLogo.png'; // added images
+import sunset from './../data/SunsetLogo.png';
 import angry from './../data/AngryFace.png';
 import './styles.css';
 
@@ -27,7 +27,7 @@ class ContactManager extends Component {
 				</Modal.Header>
 				<Modal.Body className = 'center'>
 					<ButtonGroup>
-						<Button size = 'lg' onClick = { () => this.contact('delete') }>
+						<Button size = 'lg' onClick = { () => { this.contact('delete'); this.setState({ noneSelected: true, deleteContact: false }) } }>
 							Yes
 						</Button>
 						<Button size = 'lg' onClick = { () => this.setState({ deleteContact: false }) }>
@@ -41,19 +41,19 @@ class ContactManager extends Component {
 
 	emptyInfo() {
 		return (
-			<>Hello</>
+			<div className = 'center'>
+				<Figure.Image width = '55%' src = { sunset } alt = 'Sunset' />
+				<p>No contact selected.</p>
+			</div>
 		);
 	}
 
-	// new "not logged in" function
 	renderNotLoggedIn() {
 		return (
-			<Col className = 'center'>
+			<div className = 'header center'>
 				<Figure.Image width = '35%' src = { angry } alt = 'Angry' />
-				<p className = 'nocontacts'>
-					You're not logged in. Click the "Login" button.
-				</p>
-			</Col>
+				<p>You're not logged in. Click the "Login" button.</p>
+			</div>
 		);
 	}
 
@@ -72,6 +72,7 @@ class ContactManager extends Component {
 		switch (action) {
 			case 'create':
 				await createContact({ UserID, ...contactInfo });
+				this.setState({ noneSelected: false });
 				contactInfo.ContactID = this.props.ContactID;
 				break;
 			case 'delete':
@@ -83,31 +84,21 @@ class ContactManager extends Component {
 				break;
 		}
 
-		if (!this.props.ErrorID) getContacts({ UserID });
-		this.setState({ contact: contactInfo });
+		this.setState({ contact: contactInfo, editing: false });
+		if (!this.props.ErrorID) await getContacts({ UserID });
 	}
 
 	renderContactInfo() {
-		const { editing, contact } = this.state;
+		const { editing, contact, noneSelected } = this.state;
 
 		let title;
 		let submit;
 		let contacts = Object.entries(contact).length;
 
-		// added the "no contact selected" code
-		if (!contacts && !editing) {
-			return (
-				<>
-					<div className = 'center'>
-						<Figure.Image width = '55%' src = { sunset } alt = 'Sunset' />
-						<p className = 'nocontacts'>
-						No contact selected.
-						</p>
-					</div>
-				</>
-			);
+		if (noneSelected && !editing) {
+			return this.emptyInfo();
 		}
-		else if (!contacts && editing) {
+		else if (noneSelected && editing) {
 			title = 'Add Contact';
 			submit = 'create';
 		}
@@ -117,12 +108,15 @@ class ContactManager extends Component {
 		}
 
 		return (
-			<ContactForm
-				initial = { (contacts && contact) || this.initialContact }
-				active = { editing }
-				buttonTitle = { title }
-				onSubmit = { values => this.contact(submit, values) }
-			/>
+			<>
+				<ContactForm
+					initial = { (contacts && contact) || this.initialContact }
+					active = { editing }
+					buttonTitle = { title }
+					onSubmit = { values => this.contact(submit, values) }
+				/>
+				{ this.renderBackground() }
+			</>
 		);
 	}
 
@@ -130,12 +124,12 @@ class ContactManager extends Component {
 		const { UserID, searchContact } = this.props;
 
 		const searchQuery = query => {
-			searchContact({ UserID, Search: query })
-				.then(() => !this.props.search.ErrorID && this.setState({ searching: true }));
+			searchContact({ UserID, Search: query });
+			this.setState({ searching: true });
 		};
 
 		return (
-			<Navbar>
+			<Navbar bg = 'third'>
 				<Container>
 					<Col sm = '3' className = 'justify-content-between'>
 						<SearchForm onSubmit = { ({ search }) => searchQuery(search) } />
@@ -144,19 +138,22 @@ class ContactManager extends Component {
 						<Nav className = 'w-10 float-right justify-content-between'>
 							<BsPlus
 								as = 'button'
-								size = '18px'
-								onClick = { () => this.setState({ editing: true, contact: {} }) }
+								size = '20px'
+								onClick = { () => this.setState({ noneSelected: true, editing: true, contact: {} }) }
 							/>
-							{ Object.entries(this.state.contact).length !== 0 && <BsPencil
-								as = 'button'
-								size = '18px'
-								onClick = { () => this.setState({ editing: true }) }
-							/> &&
-							<BsTrash
-								as = 'button'
-								size = '18px'
-								onClick = { () => this.setState({ deleteContact: true }) }
-							/> }
+							{ !this.state.noneSelected
+							&& <>
+								<BsPencil
+									as = 'button'
+									size = '20px'
+									onClick = { () => this.setState({ editing: true }) }
+								/>
+								<BsTrash
+									as = 'button'
+									size = '20px'
+									onClick = { () => this.setState({ deleteContact: true }) }
+								/>
+							</> }
 						</Nav>
 					</Col>
 				</Container>
@@ -164,53 +161,77 @@ class ContactManager extends Component {
 		);
 	}
 
-	// added the "no contacts added" code
+	noSearch() {
+		const { search } = this.props;
+
+		if (search && search.ErrorID) {
+			return (
+				<>
+					<h5>No contacts met your criteria.</h5>
+					<p>Try again, you can search with name, email, or phone number.</p>
+				</>
+			);
+		}
+	}
+
 	noContacts() {
+		if (this.props.ErrorID === 204) {
+			return (
+				<h5>Your contact list is empty.{ ' ' }
+					<button
+						className = { buttonLink }
+						onClick = { () => this.setState({ editing: true, contact: {} }) }
+					>
+					Add Some!
+					</button>
+				</h5>
+			);
+		}
+	}
+
+	renderBackground() {
 		return (
-			<>
-				<p className = 'nocontacts'>There are no contacts.{ ' ' }
-					<button className = { buttonLink } onClick = { () => this.setState({ editing: true, contact: {} }) }>Add Some!</button>
-				</p>
-				<BsJustify size = '100px' />
-			</>
+			<div className = 'center'>
+				<img height = '55%' src = { halfSun } />
+				<p>Thank you for using SummerTime Contacts!</p>
+			</div>
 		);
 	}
 
 	renderContacts() {
 		const { searching } = this.state;
 		const { Contacts, search } = this.props;
+		const searchResults = searching && search && search.ErrorID && {};
 
 		return (
-			<Container>
-				<Row>
-					<Col sm = '3' className = 'scroll'>
-						<ListGroup>
-							{ (Contacts || searching) && Object.entries((searching && search) || Contacts).map(([ContactID, ContactInfo]) => {
-								const { FirstName, LastName } = ContactInfo;
+			<div className = 'bg-white properHeight'>
+				<Container className = 'py-3'>
+					<Row>
+						<Col sm = '3' className = 'scroll'>
+							<ListGroup>
+								{ Contacts && Object.entries(searchResults || search || Contacts).map(([ContactID, ContactInfo]) => {
+									const { FirstName, LastName } = ContactInfo;
 
-								return (
-									<ListGroup.Item
-										action
-										key = { ContactID }
-										onClick = { () => this.setState({ editing: false, contact: { ContactID, ...ContactInfo } }) }
-									>
-										{ FirstName } { LastName }
-									</ListGroup.Item>
-								);
-							}) || this.noContacts() }
-						</ListGroup>
-					</Col>
-					<Col>
-						{ this.renderContactInfo() }
-					</Col>
-				</Row>
-			</Container>
-		);
-	}
-
-	notLoggedIn() {
-		return (
-			<>Oops, you don't seem to be logged in!</>
+									return (
+										<ListGroup.Item
+											action
+											key = { ContactID }
+											onClick = { () => this.setState({ editing: false, noneSelected: false, contact: { ContactID, ...ContactInfo } }) }
+										>
+											{ FirstName } { LastName }
+										</ListGroup.Item>
+									);
+								}) }
+								{ this.noContacts() }
+								{ this.noSearch() }
+							</ListGroup>
+						</Col>
+						<Col className = 'scroll'>
+							{ this.renderContactInfo() }
+						</Col>
+					</Row>
+				</Container>
+			</div>
 		);
 	}
 
@@ -227,7 +248,7 @@ class ContactManager extends Component {
 		else {
 			return (
 				<>
-					{ this.notLoggedIn() }
+					{ this.renderNotLoggedIn() }
 				</>
 			);
 		}
@@ -236,9 +257,9 @@ class ContactManager extends Component {
 
 const mapDispatchToProps = { createContact, deleteContact, getContacts, updateContact, searchContact };
 const mapStateToProps = ({ loggedIn, currentUser, search }) => {
-	const { UserID, Contacts, ContactID } = currentUser;
+	const { UserID, Contacts, ContactID, ErrorID } = currentUser;
 
-	return { loggedIn, UserID, search, Contacts, ContactID };
+	return { loggedIn, UserID, search, Contacts, ContactID, ErrorID };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactManager);

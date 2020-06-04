@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import md5 from 'md5';
 import '../pages/styles.css';
-import sunset2 from './../data/Sunsetlogo2.png'; // added images
+import sunset2 from './../data/Sunsetlogo2.png';
 import sunset from './../data/SunsetLogo.png';
 import { LoginForm, SignUpForm } from './';
 import { Modal, Container, Row, Col, Figure, Collapse } from '../pages';

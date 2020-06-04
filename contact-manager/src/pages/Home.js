@@ -7,6 +7,7 @@ import liderma from '../data/liderma.jpg';
 import alex from '../data/alex.jpg';
 import mason from '../data/nimu.png';
 import dakota from '../data/dakota.jpg';
+import idel from '../data/idel.jpg';
 
 import './styles.css';
 import { Container, Col, Row, Image } from './';
@@ -21,8 +22,8 @@ export default class Home extends Component {
 				<div className = 'headerLayer'>
 					<div className = 'header'>
 						<img src = { halfSun } width = '90%' />
-						<h1 className = 'text-dark'>SummerTime Contacts</h1>
-						<h2 className = 'text-dark'>Most revolutionary online Contact Manager</h2>
+						<h2 className = 'text-dark'>SummerTime Contacts</h2>
+						<h4 className = 'text-dark mx-n3'>The most revolutionary online contact manager</h4>
 					</div>
 				</div>
 			</div>
@@ -31,29 +32,27 @@ export default class Home extends Component {
 
 	renderTeam() {
 		const team = [
-			{ name: 'John Curtis', img: curtis, role: 'Project Manager', link: '' },
-			{ name: 'Liderma Guerry', img: liderma, role: 'Database', link: '' },
-			{ name: 'Alex Varga', img: alex, role: 'API', link: '' },
-			{ name: 'Dakota', img: dakota, role: 'API', link: '' },
-			{ name: 'Mason', img: mason, role: 'Front-end', link: '' },
-			{ name: 'Idel Martinez', img: '', role: 'Front-end', link: '' }
+			{ name: 'John Curtis', img: curtis, role: 'Project Manager', link: 'https://github.com/JonathanMCurtis' },
+			{ name: 'Liderma Guerry', img: liderma, role: 'Database', link: 'https://github.com/liderma' },
+			{ name: 'Alex Varga', img: alex, role: 'API', link: 'https://github.com/VargaAlex' },
+			{ name: 'Dakota', img: dakota, role: 'API', link: 'https://github.com/tuckerf42' },
+			{ name: 'Mason', img: mason, role: 'Front-end', link: 'https://github.com/MasonBenell' },
+			{ name: 'Idel Martinez', img: idel, role: 'Front-end', link: 'https://github.com/idelmr' }
 		];
 
 		return (
 			<Container className = 'center'>
-				<h1>Team</h1>
-				<Row className = 'teamContainer'>
+				<h1 className = 'text-light pt-4'>Team</h1>
+				<Row xs = { 3 } sm = { 3 } md = { 6 }>
 					{ team.map(({ name, img, role, link }) => {
 						return (
-							<Card className = 'cardSize'>
-								<Col className = 'center teamFont'>
-									<Image className = 'topSpace' width = '90%' src = { img } rounded />
-									<div className = 'center cardPad'>
-										<a className = 'nameSize' href = { link }>{ name }</a>
-										<p className = 'black'>{ role }</p>
-									</div>
-								</Col>
-							</Card>
+							<Col className = 'pt-3'>
+								<Card className = 'bg-light center'>
+									<Image className = 'my-3' width = '80%' src = { img } rounded />
+									<a className = 'text-center' href = { link }>{ name }</a>
+									<p className = 'text-dark text-center font-weight-bold'>{ role }</p>
+								</Card>
+							</Col>
 						);
 					}) }
 				</Row>
@@ -62,68 +61,29 @@ export default class Home extends Component {
 	}
 
 	renderReviews() {
+		const reviews = [
+			{ quote: '"Best website of the decade"', company: 'Frobres' },
+			{ quote: '"Surprisingly innovative design"', company: 'TMCZ' },
+			{ quote: '"#1 website for managing contacts"', company: 'Angrye\'s List' },
+			{ quote: '"Average Review:\n5 / 5 stars"', company: 'Chelp' }
+		];
+
 		return (
-			<Container className = 'center'>
-				<Row className = 'reviewContainer bottomSpace'>
-					<Col>
-						<Card className = 'cardBorder'>
-							<Card.Body className = 'cardColor'>
-								<Col>
-									<Row>
-										<h3>"Best website of the decade"</h3>
-									</Row>
-									<Row>
-										<h5>- Not Forbes</h5>
-									</Row>
-								</Col>
-							</Card.Body>
-						</Card>
-					</Col>
-					<Col>
-						<Card className = 'cardBorder'>
-							<Card.Body className = 'cardColor'>
-								<Col>
-									<Row>
-										<h3>"Surprisingly innovative design"</h3>
-									</Row>
-									<Row>
-										<h5>- Not TMZ</h5>
-									</Row>
-								</Col>
-							</Card.Body>
-						</Card>
-					</Col>
-					<Col>
-						<Card className = 'cardBorder'>
-							<Card.Body className = 'cardColor'>
-								<Col>
-									<Row>
-										<h3>"#1 website for managing contacts"</h3>
-									</Row>
-									<Row>
-										<h5>- Not Angie's List</h5>
-									</Row>
-								</Col>
-							</Card.Body>
-						</Card>
-					</Col>
-					<Col>
-						<Card className = 'cardBorder'>
-							<Card.Body className = 'cardColor'>
-								<Col>
-									<Row>
-										<h3>"Average Review: 5 / 5 stars"</h3>
-									</Row>
-									<Row>
-										<h5>- Not Yelp</h5>
-									</Row>
-								</Col>
-							</Card.Body>
-						</Card>
-					</Col>
+			<Container>
+				<Row xs = { 2 } sm = { 2 } md = { 4 } className = 'py-4'>
+					{ reviews.map(({ quote, company }) => {
+						return (
+							<Col className = 'pt-3'>
+								<Card className = 'p-3'>
+									<h5>{ quote }</h5>
+									<h6 className = 'ml-auto'>- { company }</h6>
+								</Card>
+							</Col>
+						);
+					}) }
 				</Row>
-				<Row>
-					<p className = 'white'>Copyright © 2020 contacts21.us. All Rights Reserved. SummerTime Contacts by Team 21</p>
+				<Row className = 'center'>
+					<p className = 'text-white text-center'>Copyright © 2020 contacts21.us. All Rights Reserved. SummerTime Contacts by Team 21</p>
 				</Row>
 			</Container>
 		);
@@ -131,20 +91,13 @@ export default class Home extends Component {
 
 	render() {
 		return (
-			<div>
+			<>
 				{ this.renderHeading() }
 				<div className = 'bottomColor'>
-					<div>
-						{ this.renderTeam() }
-					</div>
-					<div className = 'center'>
-						<Card className = 'line'></Card>
-					</div>
-					<div>
-						{ this.renderReviews() }
-					</div>
+					{ this.renderTeam() }
+					{ this.renderReviews() }
 				</div>
-			</div>
+			</>
 		);
 	}
 }

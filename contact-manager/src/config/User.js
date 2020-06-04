@@ -50,12 +50,13 @@ export default (state = initialState, action) => {
 		case ACTIONS.LOG_OUT_USER:
 			return { ...initialState };
 		case ACTIONS.CREATE_CONTACT:
-		case ACTIONS.GET_CONTACTS_FAIL:
 		case ACTIONS.UPDATE_CONTACT:
 		case ACTIONS.DELETE_CONTACT:
-			return { ...state, currentUser: { ...currentUser, ...data } };
+			return { ...state, search: undefined, currentUser: { ...currentUser, ...data } };
 		case ACTIONS.GET_CONTACTS_SUCCESS:
 			return { ...state, currentUser: { ...currentUser, Contacts: data } };
+		case ACTIONS.GET_CONTACTS_FAIL:
+			return { ...state, currentUser: { ...currentUser, ...data, Contacts: {} } };
 		case ACTIONS.SEARCH_CONTACT:
 			return { ...state, search: data };
 		default:
@@ -167,6 +168,7 @@ export const getContacts = user => {
 		return fetch(GetContacts, fetchPOST(user))
 			.then(response => response.json())
 			.then(data => {
+				console.log('getContacts in User.js', data);
 				if (!data.ErrorID)
 					dispatch({ type: 'GET_CONTACTS_SUCCESS', data });
 				else
@@ -211,8 +213,7 @@ export const deleteContact = contact => {
 	return dispatch => {
 		return fetch(DeleteContact, fetchPOST(contact))
 			.then(response => response.json())
-			.then(data => { console.log('Delete contact', data); dispatch({ type: 'DELETE_CONTACT', data }) }) 
-			.catch(error => console.error('FUCK', error));
+			.then(data => dispatch({ type: 'DELETE_CONTACT', data }));
 	};
 };
 

@@ -181,20 +181,13 @@ export const SearchForm = ({ onSubmit }) => {
 		>
 			{ ({ touched }) => (
 				<Form>
-					<Row>
-						<Col lg = '10'>
-							<Field
-								className = { touched.search && 'text-input' }
-								id = 'search'
-								name = 'search'
-								type = 'text'
-								placeholder = 'Search Contacts'
-							/>
-						</Col>
-						<Col className = 'align-self-center ml-n3'>
-							<Button variant = 'link ml-n2' type = 'submit'><BsSearch size = '20' /></Button>
-						</Col>
-					</Row>
+					<Field
+						className = { touched.search && 'text-input' }
+						id = 'search'
+						name = 'search'
+						type = 'text'
+						placeholder = 'Search...'
+					/>
 				</Form>
 
 			) }
